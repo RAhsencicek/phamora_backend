@@ -1,0 +1,34 @@
+ExpressJS ile bir backend server oluşturacağız.
+Veritabanı olarak mongoDB kullanacağız.
+MongoDB connection URL: mongodb+srv://Cluster53739:1910@cluster53739.lsf3k.mongodb.net/
+collection: test
+existing database: users
+Bu veritabanında bu şekilde bir kullanıcı oluşturdum;
+"db.users.insertOne({
+  pharmacistId: "ECZ123456", // Eczacı Kimlik Numarası
+  name: "Ahmet",
+  surname: "Yılmaz",
+  email: "ahmet.yilmaz@example.com",
+  phone: "+905551234567",
+  passwordHash: "sha256hashedpassword", // Şifre, hashlenmiş olmalı!
+  role: "pharmacist", // "pharmacist" veya "admin"
+  address: {
+    street: "Atatürk Caddesi",
+    city: "İstanbul",
+    district: "Kadıköy",
+    postalCode: "34710"
+  },
+  location: {
+    type: "Point",
+    coordinates: [29.0327, 40.9914] // Longitude, Latitude
+  },
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  isActive: true,
+  twoFactorEnabled: false
+})"
+
+Bu kullanıcı yapısına bakarak benim için login ve register işlemlerinin API'sini kodlamanı istiyorum.
+Eksik hiçbir şey olmasın, gereksiz fazlalıklar da olmasın.
+Testleri yazdığından da emin ol.
+Yazdığın kodu railway.app ile deploy edeceğim ama deploy için bir şey yapmana gerek yok. Yalnızca kodun yapısında railway.app için bir düzenleme yapman gerekiyorsa yap diye söyledim. Deploy işlemini tarayıcı üzerinden yapacağım.

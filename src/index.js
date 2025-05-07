@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
+const fdaRoutes = require('./routes/fdaRoutes');
 
 const app = express();
 
@@ -17,6 +18,7 @@ mongoose.connect(MONGODB_URI)
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/fda', fdaRoutes);
 
 // Sağlık kontrolü endpoint'i
 app.get('/health', (req, res) => {
