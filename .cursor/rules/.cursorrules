@@ -32,3 +32,190 @@ Bu kullanıcı yapısına bakarak benim için login ve register işlemlerinin AP
 Eksik hiçbir şey olmasın, gereksiz fazlalıklar da olmasın.
 Testleri yazdığından da emin ol.
 Yazdığın kodu railway.app ile deploy edeceğim ama deploy için bir şey yapmana gerek yok. Yalnızca kodun yapısında railway.app için bir düzenleme yapman gerekiyorsa yap diye söyledim. Deploy işlemini tarayıcı üzerinden yapacağım.
+
+
+Eczane API;
+İl ve ilçeleri görüntülemek için kullanılır.
+Request;
+https://www.nosyapi.com/apiv2/service/pharmacies-on-duty/cities?apiKey=XAkQiDBCyrf4bBmd90RDsswsLS1X0j6IJkyGoYyQ5x4qf9BsNvKuLNiLrJ5A
+Response;
+{
+    "status": "success",
+    "message": "ok",
+    "messageTR": "ok",
+    "systemTime": 1705868163,
+    "endpoint": "pharmacies-on-duty\/cities",
+    "rowCount": 82,
+    "creditUsed": 82,
+    "data": [
+        {
+            "cities": "Adana",
+            "slug": "adana"
+        }
+    ]
+}
+
+Nöbetçi eczaneleri listeleyen servis.
+Request;
+https://www.nosyapi.com/apiv2/service/pharmacies-on-duty?apiKey=XAkQiDBCyrf4bBmd90RDsswsLS1X0j6IJkyGoYyQ5x4qf9BsNvKuLNiLrJ5A
+Response;
+{
+    "status": "success",
+    "message": "ok",
+    "messageTR": "ok",
+    "systemTime": 1705870028,
+    "endpoint": "pharmacies-on-duty",
+    "rowCount": 1,
+    "creditUsed": 1,
+    "data": [
+        {
+            "pharmacyID": 25688,
+            "pharmacyName": "Akyurt Merkez Eczanesi",
+            "address": "Beyazıt Mahallesi, Sevda Caddesi No:6\/D Akyurt\/ Ankara",
+            "city": "Ankara",
+            "district": "Akyurt",
+            "town": null,
+            "directions": "Akyurt 1 Nolu Aile Sağlığı Merkezi karşısı",
+            "phone": "0 (312) 512-26-12",
+            "phone2": null,
+            "pharmacyDutyStart": "2024-01-21 09:30:00",
+            "pharmacyDutyEnd": "2024-01-22 08:30:00",
+            "latitude": 40.131053,
+            "longitude": 33.080705
+        }
+    ]
+}
+
+Enlem boylama göre en yakından olmak üzere 20 adet nöbetçi eczane döndürür.
+Request;
+https://www.nosyapi.com/apiv2/service/pharmacies-on-duty/locations?latitude=38.432561&longitude=27.143503&apiKey=XAkQiDBCyrf4bBmd90RDsswsLS1X0j6IJkyGoYyQ5x4qf9BsNvKuLNiLrJ5A
+Response;
+{
+    "status": "success",
+    "message": "ok",
+    "messageTR": "ok",
+    "systemTime": 1705870138,
+    "endpoint": "pharmacies-on-duty\/locations",
+    "rowCount": 20,
+    "creditUsed": 1,
+    "data": [
+        {
+            "pharmacyID": 15171,
+            "pharmacyName": "Berrin Eczanesi",
+            "address": "1456 Sokak No:98\/A Alsancak Konak \/ İzmir",
+            "city": "İzmir",
+            "district": "Konak",
+            "town": "Alsancak",
+            "directions": "",
+            "phone": "0(232)463-40-86",
+            "phone2": "",
+            "pharmacyDutyStart": "2024-01-21 09:00:00",
+            "pharmacyDutyEnd": "2024-01-22 09:00:00",
+            "latitude": 38.435937,
+            "longitude": 27.144759,
+            "distanceMt": 391,
+            "distanceKm": 0.391,
+            "distanceMil": 0.243
+        }
+    ]
+}
+
+İl ve ilçeleri ait nöbetçi eczanelerin sayısını verir.
+Request;
+https://www.nosyapi.com/apiv2/service/pharmacies-on-duty/count-cities?apiKey=XAkQiDBCyrf4bBmd90RDsswsLS1X0j6IJkyGoYyQ5x4qf9BsNvKuLNiLrJ5A
+Response;
+{
+    "status": "success",
+    "message": "ok",
+    "messageTR": "ok",
+    "systemTime": 1722722087,
+    "endpoint": "pharmacies-on-duty\/count-cities",
+    "rowCount": 82,
+    "creditUsed": 1,
+    "data": [
+        {
+            "cities": "Adana",
+            "slug": "adana",
+            "dutyPharmacyCount": 36
+        },
+        {
+            "cities": "Adıyaman",
+            "slug": "adiyaman",
+            "dutyPharmacyCount": 6
+        }
+    ]
+}
+
+Türkiye ve Kıbrıs'da yer alan bütün nöbetçi eczaneleri tek endpointte sunar.
+Request;
+https://www.nosyapi.com/apiv2/service/pharmacies-on-duty/count-cities?apiKey=XAkQiDBCyrf4bBmd90RDsswsLS1X0j6IJkyGoYyQ5x4qf9BsNvKuLNiLrJ5A
+Response;
+{
+    "status": "success",
+    "message": "ok",
+    "messageTR": "ok",
+    "systemTime": 1722722087,
+    "endpoint": "pharmacies-on-duty\/count-cities",
+    "rowCount": 82,
+    "creditUsed": 1,
+    "data": [
+        {
+            "cities": "Adana",
+            "slug": "adana",
+            "dutyPharmacyCount": 36
+        },
+        {
+            "cities": "Adıyaman",
+            "slug": "adiyaman",
+            "dutyPharmacyCount": 6
+        }
+    ]
+}
+
+Türkiye ve Kıbrıs'da yer alan bütün nöbetçi eczaneleri tek endpointte sunar.
+Request;
+https://www.nosyapi.com/apiv2/service/pharmacies-on-duty/all?apiKey=XAkQiDBCyrf4bBmd90RDsswsLS1X0j6IJkyGoYyQ5x4qf9BsNvKuLNiLrJ5A
+Response;
+{
+    "status": "success",
+    "message": "ok",
+    "messageTR": "ok",
+    "systemTime": 1705870080,
+    "endpoint": "pharmacies-on-duty\/all",
+    "rowCount": 1281,
+    "creditUsed": 81,
+    "data": [
+        {
+            "pharmacyID": 15,
+            "pharmacyName": "Hürriyet Eczanesi",
+            "address": "Hürriyet Sağlık Ocağı karşısı Ceyhan \/ Adana",
+            "city": "Adana",
+            "district": "Ceyhan",
+            "town": "",
+            "directions": "",
+            "phone": "0(322)613-18-01",
+            "phone2": "",
+            "pharmacyDutyStart": "2024-01-21 08:00:00",
+            "pharmacyDutyEnd": "2024-01-22 08:00:00",
+            "latitude": 37.035023,
+            "longitude": 35.821181
+        }
+    ]
+}
+
+Nöbetçi eczanelerin en son hangi tarihte güncellendiği bilgisi döndürür.
+Request;
+https://www.nosyapi.com/apiv2/service/pharmacies-on-duty/status?apiKey=XAkQiDBCyrf4bBmd90RDsswsLS1X0j6IJkyGoYyQ5x4qf9BsNvKuLNiLrJ5A
+Response;
+{
+    "status": "success",
+    "message": "ok",
+    "messageTR": "ok",
+    "systemTime": 1714429601,
+    "endpoint": "pharmacies-on-duty\/status",
+    "rowCount": 1,
+    "creditUsed": 0,
+    "data": {
+        "lastupdated": "2024-04-30 10:00:00"
+    }
+}
