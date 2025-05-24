@@ -1,0 +1,1015 @@
+{
+	"info": {
+		"name": "Phamora Backend API",
+		"description": "Eczane Yönetim Sistemi API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Kimlik Doğrulama",
+			"description": "Kullanıcı kaydı ve giriş işlemleri",
+			"item": [
+				{
+					"name": "Kayıt Ol",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"pharmacistId\": \"12345678910\",\n  \"name\": \"Ali\",\n  \"surname\": \"Yılmaz\",\n  \"email\": \"ali.yilmaz@gmail.com\",\n  \"phone\": \"5551234567\",\n  \"password\": \"123456\",\n  \"address\": {\n    \"street\": \"Atatürk Caddesi No:15\",\n    \"city\": \"İstanbul\",\n    \"district\": \"Kadıköy\",\n    \"postalCode\": \"34710\"\n  },\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [29.0609, 41.0200]\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Yeni bir eczacı kaydı oluşturur\n\nGerekli alanlar:\n- pharmacistId (benzersiz olmalı)\n- name\n- surname\n- email (benzersiz olmalı)\n- phone (benzersiz olmalı)\n- password (en az 6 karakter)\n- address (adres bilgileri)\n- location (konum bilgileri - coordinates: [longitude, latitude])"
+					},
+					"response": []
+				},
+				{
+					"name": "Giriş Yap",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"pharmacistId\": \"12345678910\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Eczacı kimlik numarası ve şifre ile giriş yapar\n\nGerekli alanlar:\n- pharmacistId\n- password"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "İlaç Yönetimi",
+			"description": "İlaç listeleme, arama ve yönetim işlemleri",
+			"item": [
+				{
+					"name": "Tüm İlaçları Listele",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines"
+							]
+						},
+						"description": "Tüm ilaçları listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "İlaç Kategorilerini Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines",
+								"categories"
+							]
+						},
+						"description": "İlaç kategorilerini listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "İlaç Üreticilerini Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines/manufacturers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines",
+								"manufacturers"
+							]
+						},
+						"description": "İlaç üreticilerini listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "Dozaj Formlarını Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines/dosage-forms",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines",
+								"dosage-forms"
+							]
+						},
+						"description": "Dozaj formlarını listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "İlaç İstatistikleri",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines",
+								"stats"
+							]
+						},
+						"description": "İlaç istatistiklerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Barkod ile İlaç Ara",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines/barcode/8699536090719",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines",
+								"barcode",
+								"8699536090719"
+							]
+						},
+						"description": "Barkod numarası ile ilaç arar"
+					},
+					"response": []
+				},
+				{
+					"name": "ID ile İlaç Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines/60c72b2f9b1d8b2a58c15d87",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines",
+								"60c72b2f9b1d8b2a58c15d87"
+							]
+						},
+						"description": "ID ile ilaç bilgilerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Yeni İlaç Ekle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Parol\",\n  \"activeIngredient\": \"Parasetamol\",\n  \"barcode\": \"8699536090719\",\n  \"manufacturer\": \"Atabay\",\n  \"category\": \"Ağrı Kesici\",\n  \"dosageForm\": \"tablet\",\n  \"strength\": \"500 mg\",\n  \"packageSize\": \"20 tablet\",\n  \"price\": 15.75,\n  \"unit\": \"box\",\n  \"description\": \"Ateş düşürücü ve ağrı kesici etkiye sahiptir.\",\n  \"sideEffects\": \"Mide bulantısı, karaciğer hasarı (yüksek dozda)\",\n  \"contraindications\": \"Ciddi karaciğer hastalığı olan hastalarda kullanılmamalıdır.\",\n  \"storageConditions\": \"25°C altında, kuru bir yerde saklayınız.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines"
+							]
+						},
+						"description": "Yeni bir ilaç ekler (admin yetkisi gerekir)\n\nÖNEMLİ NOT:\n- dosageForm için geçerli değerler: 'tablet', 'capsule', 'syrup', 'injection', 'cream', 'drops', 'inhaler', 'patch', 'suppository', 'other'\n- unit için geçerli değerler: 'piece', 'ml', 'mg', 'g', 'box', 'tube', 'bottle'\n\nGerekli alanlar:\n- name (İlaç adı)\n- barcode (Benzersiz olmalı)\n- manufacturer (Üretici)\n- dosageForm (Dozaj formu - enum değerlerinden biri)\n- packageSize (Paket boyutu)\n- unit (Birim - enum değerlerinden biri)"
+					},
+					"response": []
+				},
+				{
+					"name": "İlaç Güncelle",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"price\": 18.50,\n  \"description\": \"Güncellenmiş açıklama\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines/60c72b2f9b1d8b2a58c15d87",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines",
+								"60c72b2f9b1d8b2a58c15d87"
+							]
+						},
+						"description": "Mevcut bir ilacı günceller (admin yetkisi gerekir)"
+					},
+					"response": []
+				},
+				{
+					"name": "İlaç Sil",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/medicines/60c72b2f9b1d8b2a58c15d87",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"medicines",
+								"60c72b2f9b1d8b2a58c15d87"
+							]
+						},
+						"description": "Bir ilacı siler (admin yetkisi gerekir)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Envanter Yönetimi",
+			"description": "Eczane stok yönetimi işlemleri",
+			"item": [
+				{
+					"name": "Eczane Envanterini Getir",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory/pharmacy/60c72b2f9b1d8b2a58c15d88",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"pharmacy",
+								"60c72b2f9b1d8b2a58c15d88"
+							]
+						},
+						"description": "Belirli bir eczanenin envanterini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Yeni Stok Ekle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"medicine\": \"60c72b2f9b1d8b2a58c15d87\",\n  \"quantity\": 100,\n  \"batchNumber\": \"BN12345\",\n  \"expiryDate\": \"2025-12-31\",\n  \"unitPrice\": {\n    \"currency\": \"TRY\",\n    \"amount\": 18.75\n  },\n  \"costPrice\": {\n    \"currency\": \"TRY\",\n    \"amount\": 12.50\n  },\n  \"minStockLevel\": 20,\n  \"maxStockLevel\": 200,\n  \"isAvailableForTrade\": true,\n  \"location\": {\n    \"shelf\": \"A5\",\n    \"section\": \"Ağrı Kesiciler\"\n  },\n  \"supplier\": {\n    \"name\": \"ABC İlaç Dağıtım\",\n    \"contact\": \"0212 123 4567\"\n  },\n  \"notes\": \"Özel notlar\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory/pharmacy/60c72b2f9b1d8b2a58c15d88",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"pharmacy",
+								"60c72b2f9b1d8b2a58c15d88"
+							]
+						},
+						"description": "Eczane envanterine yeni stok ekler\n\nGerekli alanlar:\n- medicine (İlaç ID'si)\n- quantity (Miktar)\n- expiryDate (Son kullanma tarihi - ISO format: YYYY-MM-DD)\n- unitPrice.amount (Satış fiyatı)\n\nÖnerilen alanlar:\n- batchNumber (Parti numarası)\n- costPrice.amount (Maliyet fiyatı)\n- minStockLevel (Minimum stok seviyesi)\n- supplier (Tedarikçi bilgileri)"
+					},
+					"response": []
+				},
+				{
+					"name": "Stok Güncelle",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity\": 85,\n  \"unitPrice\": {\n    \"amount\": 19.50\n  },\n  \"minStockLevel\": 15\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory/60c72b2f9b1d8b2a58c15d89",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"60c72b2f9b1d8b2a58c15d89"
+							]
+						},
+						"description": "Mevcut bir stok kaydını günceller"
+					},
+					"response": []
+				},
+				{
+					"name": "Stok Sil",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory/60c72b2f9b1d8b2a58c15d89",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"60c72b2f9b1d8b2a58c15d89"
+							]
+						},
+						"description": "Bir stok kaydını siler"
+					},
+					"response": []
+				},
+				{
+					"name": "Düşük Stok Uyarıları",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory/pharmacy/60c72b2f9b1d8b2a58c15d88/low-stock",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"pharmacy",
+								"60c72b2f9b1d8b2a58c15d88",
+								"low-stock"
+							]
+						},
+						"description": "Düşük stok seviyesine ulaşan ürünleri listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "Son Kullanma Tarihi Yaklaşan Ürünler",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory/pharmacy/60c72b2f9b1d8b2a58c15d88/expiring",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"pharmacy",
+								"60c72b2f9b1d8b2a58c15d88",
+								"expiring"
+							]
+						},
+						"description": "Son kullanma tarihi yaklaşan ürünleri listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "İlaç Ara (Diğer Eczanelerde)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory/search/medicine/60c72b2f9b1d8b2a58c15d87",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"search",
+								"medicine",
+								"60c72b2f9b1d8b2a58c15d87"
+							]
+						},
+						"description": "Belirli bir ilacı diğer eczanelerde arar"
+					},
+					"response": []
+				},
+				{
+					"name": "Stok Rezerve Et",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity\": 5,\n  \"requestingPharmacy\": \"60c72b2f9b1d8b2a58c15d90\",\n  \"notes\": \"Acil ihtiyaç\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/inventory/60c72b2f9b1d8b2a58c15d89/reserve",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"60c72b2f9b1d8b2a58c15d89",
+								"reserve"
+							]
+						},
+						"description": "Eczaneler arası ticaret için stok rezerve eder\n\nGerekli alanlar:\n- quantity (Rezerve edilecek miktar)\n- requestingPharmacy (Talep eden eczane ID'si)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Eczane Bilgileri",
+			"description": "Eczane arama ve listeleme işlemleri",
+			"item": [
+				{
+					"name": "İlleri Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pharmacies/cities",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"pharmacies",
+								"cities"
+							]
+						},
+						"description": "Tüm illeri listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "Nöbetçi Eczaneleri Listele",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pharmacies/list?city=İstanbul&district=Kadıköy",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"pharmacies",
+								"list"
+							],
+							"query": [
+								{
+									"key": "city",
+									"value": "İstanbul"
+								},
+								{
+									"key": "district",
+									"value": "Kadıköy"
+								}
+							]
+						},
+						"description": "İl ve ilçeye göre nöbetçi eczaneleri listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "En Yakın Eczaneleri Bul",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pharmacies/nearby?lat=41.0082&lng=28.9784&distance=5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"pharmacies",
+								"nearby"
+							],
+							"query": [
+								{
+									"key": "lat",
+									"value": "41.0082"
+								},
+								{
+									"key": "lng",
+									"value": "28.9784"
+								},
+								{
+									"key": "distance",
+									"value": "5"
+								}
+							]
+						},
+						"description": "Konuma göre en yakın eczaneleri bulur"
+					},
+					"response": []
+				},
+				{
+					"name": "Eczane Sayılarını Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pharmacies/counts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"pharmacies",
+								"counts"
+							]
+						},
+						"description": "İl ve ilçe bazında eczane sayılarını getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Tüm Nöbetçi Eczaneleri Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pharmacies/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"pharmacies",
+								"all"
+							]
+						},
+						"description": "Tüm nöbetçi eczaneleri listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "Eczane Verilerinin Durumunu Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/pharmacies/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"pharmacies",
+								"status"
+							]
+						},
+						"description": "Eczane verilerinin son güncelleme zamanını getirir"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "İşlem Yönetimi",
+			"description": "Eczaneler arası işlem yönetimi",
+			"item": [
+				{
+					"name": "Kullanıcı İşlemlerini Getir",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions"
+							]
+						},
+						"description": "Kullanıcının tüm işlemlerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "İşlem İstatistikleri",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"stats"
+							]
+						},
+						"description": "İşlem istatistiklerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "İşlem Detayını Getir",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/60c72b2f9b1d8b2a58c15d91",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"60c72b2f9b1d8b2a58c15d91"
+							]
+						},
+						"description": "Belirli bir işlemin detaylarını getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Yeni İşlem Oluştur",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"transfer\",\n  \"seller\": {\n    \"pharmacy\": \"60c72b2f9b1d8b2a58c15d88\",\n    \"user\": \"60c72b2f9b1d8b2a58c15d86\"\n  },\n  \"buyer\": {\n    \"pharmacy\": \"60c72b2f9b1d8b2a58c15d90\",\n    \"user\": \"60c72b2f9b1d8b2a58c15d87\"\n  },\n  \"items\": [\n    {\n      \"medicine\": \"60c72b2f9b1d8b2a58c15d87\",\n      \"quantity\": 10,\n      \"unitPrice\": {\n        \"currency\": \"TRY\",\n        \"amount\": 18.75\n      },\n      \"totalPrice\": {\n        \"currency\": \"TRY\",\n        \"amount\": 187.50\n      },\n      \"batchNumber\": \"BN12345\",\n      \"expiryDate\": \"2025-12-31\"\n    }\n  ],\n  \"totalAmount\": {\n    \"currency\": \"TRY\",\n    \"amount\": 187.50\n  },\n  \"paymentMethod\": \"bank_transfer\",\n  \"notes\": \"Acil sipariş\",\n  \"transactionId\": \"TXN-MANUAL-TEST\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions"
+							]
+						},
+						"description": "Yeni bir işlem oluşturur\n\nGerekli alanlar:\n- transactionId (Benzersiz bir işlem kodu - otomatik oluşturulmalı, ama backend'de bir sorun varsa elle ekleyin)\n- type (İşlem türü: 'sale', 'purchase', 'exchange', 'transfer')\n- seller.pharmacy (Satıcı eczane ID'si)\n- seller.user (Satıcı kullanıcı ID'si)\n- buyer.pharmacy (Alıcı eczane ID'si)\n- buyer.user (Alıcı kullanıcı ID'si)\n- items (İşlem ürünleri dizisi - en az bir ürün içermeli)\n  - medicine (İlaç ID'si)\n  - quantity (Miktar)\n  - unitPrice.amount (Birim fiyat)\n  - totalPrice.amount (Toplam fiyat)\n- totalAmount.amount (Toplam tutar)"
+					},
+					"response": []
+				},
+				{
+					"name": "İşlem Durumunu Güncelle",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"completed\",\n  \"notes\": \"Teslimat tamamlandı\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/60c72b2f9b1d8b2a58c15d91/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"60c72b2f9b1d8b2a58c15d91",
+								"status"
+							]
+						},
+						"description": "İşlem durumunu günceller\n\nGeçerli status değerleri: 'pending', 'confirmed', 'in_transit', 'delivered', 'completed', 'cancelled', 'refunded'"
+					},
+					"response": []
+				},
+				{
+					"name": "İşlem Değerlendirmesi Ekle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rating\": 5,\n  \"comment\": \"Hızlı ve güvenilir işlem\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/60c72b2f9b1d8b2a58c15d91/rating",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"60c72b2f9b1d8b2a58c15d91",
+								"rating"
+							]
+						},
+						"description": "İşleme değerlendirme ekler\n\nGerekli alanlar:\n- rating (1-5 arası değer)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "FDA Verileri",
+			"description": "FDA ilaç veritabanı sorguları",
+			"item": [
+				{
+					"name": "İlaç Bilgisi Sorgula",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/fda/drugs?query=aspirin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fda",
+								"drugs"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "aspirin"
+								}
+							]
+						},
+						"description": "FDA veritabanında ilaç bilgisi sorgular"
+					},
+					"response": []
+				},
+				{
+					"name": "İlaç Detaylarını Getir",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/fda/drugs/12345",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fda",
+								"drugs",
+								"12345"
+							]
+						},
+						"description": "FDA veritabanında ilaç detaylarını getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Yan Etki Raporları",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/fda/adverse-events?drug=aspirin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fda",
+								"adverse-events"
+							],
+							"query": [
+								{
+									"key": "drug",
+									"value": "aspirin"
+								}
+							]
+						},
+						"description": "FDA yan etki raporlarını getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "İlaç Geri Çağırma Bildirimleri",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/fda/drug-recalls?query=aspirin",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"fda",
+								"drug-recalls"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "aspirin"
+								}
+							]
+						},
+						"description": "FDA ilaç geri çağırma bildirimlerini getirir"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+} 
