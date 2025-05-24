@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema({
       required: true
     }
   },
+  pharmacy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pharmacy'
+  },
   isActive: {
     type: Boolean,
     default: true

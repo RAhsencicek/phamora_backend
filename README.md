@@ -89,6 +89,36 @@ npm start
 - `GET /api/pharmacy/all` - Tüm Türkiye ve KKTC'deki nöbetçi eczaneleri listeleme
 - `GET /api/pharmacy/status` - Nöbetçi eczane verilerinin son güncellenme tarihini görüntüleme
 
+### İlaç Yönetimi
+- `GET /api/medicines` - Tüm ilaçları listeleme (filtreleme ve arama destekli)
+- `GET /api/medicines/:medicineId` - İlaç detaylarını görüntüleme
+- `GET /api/medicines/barcode/:barcode` - Barkod ile ilaç arama
+- `GET /api/medicines/categories` - İlaç kategorilerini listeleme
+- `GET /api/medicines/manufacturers` - İlaç üreticilerini listeleme
+- `GET /api/medicines/dosage-forms` - Dozaj formlarını listeleme
+- `GET /api/medicines/stats` - İlaç istatistikleri
+- `POST /api/medicines` - Yeni ilaç ekleme (admin)
+- `PUT /api/medicines/:medicineId` - İlaç güncelleme (admin)
+- `DELETE /api/medicines/:medicineId` - İlaç silme (admin)
+
+### Stok Yönetimi
+- `GET /api/inventory/pharmacy/:pharmacyId` - Eczane stok listesi
+- `POST /api/inventory/pharmacy/:pharmacyId` - Yeni stok ekleme
+- `PUT /api/inventory/:inventoryId` - Stok güncelleme
+- `DELETE /api/inventory/:inventoryId` - Stok silme
+- `GET /api/inventory/pharmacy/:pharmacyId/low-stock` - Düşük stok uyarıları
+- `GET /api/inventory/pharmacy/:pharmacyId/expiring` - Son kullanma tarihi yaklaşan ürünler
+- `GET /api/inventory/search/medicine/:medicineId` - Diğer eczanelerde ilaç arama
+- `POST /api/inventory/:inventoryId/reserve` - Stok rezerve etme
+
+### İşlem Yönetimi (Eczaneler Arası Ticaret)
+- `GET /api/transactions` - Kullanıcının işlemleri
+- `GET /api/transactions/:transactionId` - İşlem detayı
+- `GET /api/transactions/stats` - İşlem istatistikleri
+- `POST /api/transactions` - Yeni işlem oluşturma
+- `PATCH /api/transactions/:transactionId/status` - İşlem durumu güncelleme
+- `POST /api/transactions/:transactionId/rating` - İşlem değerlendirmesi
+
 ## Geliştirme
 
 ```bash
