@@ -24,7 +24,7 @@ router.post(
 router.post(
   '/login',
   [
-    body('email').isEmail().withMessage('Geçerli bir e-posta adresi giriniz'),
+    body('pharmacistId').notEmpty().withMessage('Eczacı kimlik numarası zorunludur'),
     body('password').notEmpty().withMessage('Şifre zorunludur')
   ],
   authController.login

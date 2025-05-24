@@ -1,8 +1,5 @@
-const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'gizli_anahtar_buraya_gelecek';
 
 exports.register = async (req, res) => {
   try {
@@ -46,15 +43,8 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
     res.status(201).json({
       message: 'Kullanıcı başarıyla oluşturuldu',
-      token,
       user: {
         id: user._id,
         pharmacistId: user.pharmacistId,
@@ -76,9 +66,9 @@ exports.login = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { pharmacistId, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ pharmacistId });
     if (!user) {
       return res.status(401).json({ message: 'Geçersiz kimlik bilgileri' });
     }
@@ -92,15 +82,8 @@ exports.login = async (req, res) => {
       return res.status(403).json({ message: 'Hesabınız aktif değil' });
     }
 
-    const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
     res.json({
       message: 'Giriş başarılı',
-      token,
       user: {
         id: user._id,
         pharmacistId: user.pharmacistId,
