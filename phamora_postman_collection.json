@@ -1008,7 +1008,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:3000",
+			"value": "phamorabackend-production.up.railway.app",
 			"type": "string"
 		}
 	]
