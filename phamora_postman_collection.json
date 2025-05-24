@@ -21,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"pharmacistId\": \"12345678910\",\n  \"name\": \"Ali\",\n  \"surname\": \"Yılmaz\",\n  \"email\": \"ali.yilmaz@gmail.com\",\n  \"phone\": \"5551234567\",\n  \"password\": \"123456\",\n  \"address\": {\n    \"street\": \"Atatürk Caddesi No:15\",\n    \"city\": \"İstanbul\",\n    \"district\": \"Kadıköy\",\n    \"postalCode\": \"34710\"\n  },\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [29.0609, 41.0200]\n  }\n}"
+							"raw": "{\n  \"pharmacistId\": \"12345678910\",\n  \"name\": \"Ali\",\n  \"surname\": \"Yılmaz\",\n  \"email\": \"ali.yilmaz@gmail.com\",\n  \"phone\": \"5551234567\",\n  \"password\": \"123456\",\n  \"address\": {\n    \"street\": \"Atatürk Caddesi No:15\",\n    \"city\": \"İstanbul\",\n    \"district\": \"Kadıköy\",\n    \"postalCode\": \"34710\"\n  },\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [29.0609, 41.0200]\n  },\n  \"pharmacyDetails\": {\n    \"name\": \"Ali Eczanesi\",\n    \"licenseNumber\": \"IST-2024-123\",\n    \"address\": {\n      \"street\": \"Atatürk Caddesi No:15\",\n      \"city\": \"İstanbul\",\n      \"district\": \"Kadıköy\",\n      \"postalCode\": \"34710\"\n    },\n    \"phone\": \"0212 123 4567\",\n    \"email\": \"ali.eczane@gmail.com\",\n    \"services\": [\"Nöbetçi\", \"Evde Teslimat\", \"Danışmanlık\"],\n    \"description\": \"Kadıköy'ün modern eczanesi\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/auth/register",
@@ -34,7 +34,7 @@
 								"register"
 							]
 						},
-						"description": "Yeni bir eczacı kaydı oluşturur\n\nGerekli alanlar:\n- pharmacistId (benzersiz olmalı)\n- name\n- surname\n- email (benzersiz olmalı)\n- phone (benzersiz olmalı)\n- password (en az 6 karakter)\n- address (adres bilgileri)\n- location (konum bilgileri - coordinates: [longitude, latitude])"
+						"description": "Yeni bir eczacı kaydı oluşturur\n\nÖNEMLİ: Her kullanıcının bir eczanesi olmak zorundadır!\n\nGerekli alanlar:\n- pharmacistId (benzersiz olmalı)\n- name\n- surname\n- email (benzersiz olmalı)\n- phone (benzersiz olmalı)\n- password (en az 6 karakter)\n- address (adres bilgileri)\n- location (konum bilgileri - coordinates: [longitude, latitude])\n- pharmacyDetails (eczane bilgileri - zorunlu)\n  - name (eczane adı)\n  - licenseNumber (ruhsat numarası, benzersiz olmalı)"
 					},
 					"response": []
 				},
@@ -63,7 +63,7 @@
 								"login"
 							]
 						},
-						"description": "Eczacı kimlik numarası ve şifre ile giriş yapar\n\nGerekli alanlar:\n- pharmacistId\n- password"
+						"description": "Eczacı kimlik numarası ve şifre ile giriş yapar\n\nGerekli alanlar:\n- pharmacistId\n- password\n\nDönüş değeri, kullanıcı bilgileri ve eczane bilgilerini içerir"
 					},
 					"response": []
 				}
@@ -609,7 +609,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/pharmacies/nearby?lat=41.0082&lng=28.9784&distance=5",
+							"raw": "{{baseUrl}}/api/pharmacies/nearby?latitude=41.0082&longitude=28.9784&distance=5",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -694,6 +694,64 @@
 							]
 						},
 						"description": "Eczane verilerinin son güncelleme zamanını getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Eczane Güncelle",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Yeni Eczane Adı\",\n  \"address\": {\n    \"street\": \"Yeni Cadde No:10\",\n    \"city\": \"İstanbul\",\n    \"district\": \"Kadıköy\",\n    \"postalCode\": \"34710\"\n  },\n  \"phone\": \"0212 345 6789\",\n  \"email\": \"yeni.email@example.com\",\n  \"description\": \"Güncellenmiş açıklama\",\n  \"services\": [\"Nöbetçi\", \"Evde Teslimat\", \"Online Danışma\"],\n  \"workingHours\": {\n    \"monday\": { \"open\": \"08:00\", \"close\": \"18:00\" },\n    \"tuesday\": { \"open\": \"08:00\", \"close\": \"18:00\" },\n    \"wednesday\": { \"open\": \"08:00\", \"close\": \"18:00\" },\n    \"thursday\": { \"open\": \"08:00\", \"close\": \"18:00\" },\n    \"friday\": { \"open\": \"08:00\", \"close\": \"18:00\" },\n    \"saturday\": { \"open\": \"09:00\", \"close\": \"17:00\" },\n    \"sunday\": { \"open\": \"kapalı\", \"close\": \"kapalı\" }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/pharmacies/60c72b2f9b1d8b2a58c15d88",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"pharmacies",
+								"60c72b2f9b1d8b2a58c15d88"
+							]
+						},
+						"description": "Eczane bilgilerini günceller\n\nNOT: owner alanını güncellemeye izin verilmez. Her eczanenin bir sahibi olmak zorundadır ve değiştirilemez.\n\nİzin verilen güncelleme alanları:\n- name\n- address\n- location\n- phone\n- email\n- description\n- services\n- workingHours\n- isOnDuty\n- isActive"
+					},
+					"response": []
+				},
+				{
+					"name": "Eczane Sil",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/pharmacies/60c72b2f9b1d8b2a58c15d88",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"pharmacies",
+								"60c72b2f9b1d8b2a58c15d88"
+							]
+						},
+						"description": "Eczaneyi siler (admin yetkisi gerekir)\n\nNOT: Bir eczane, bir kullanıcıya bağlıysa silinemez! Önce kullanıcı-eczane ilişkisinin kaldırılması gerekir.\n\nHata durumları:\n- 404: Eczane bulunamadı\n- 400: Eczane bir kullanıcıya bağlı\n- 403: Yetki hatası"
 					},
 					"response": []
 				}
@@ -979,6 +1037,73 @@
 							]
 						},
 						"description": "FDA ilaç geri çağırma bildirimlerini getirir"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Kullanıcı Yönetimi (Admin)",
+			"description": "Kullanıcı ve eczane ilişkisi yönetim işlemleri",
+			"item": [
+				{
+					"name": "Kullanıcı-Eczane Bağlantısı Oluştur",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"60c72b2f9b1d8b2a58c15d86\",\n  \"pharmacyId\": \"60c72b2f9b1d8b2a58c15d88\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users/assign-pharmacy",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"assign-pharmacy"
+							]
+						},
+						"description": "Kullanıcı ile eczane arasında bağlantı oluşturur (sadece admin yetkisi ile)\n\nNOT: Her kullanıcı sadece bir eczaneye bağlanabilir. Eczane ve kullanıcının başka ilişkileri yoksa bağlantı oluşturulabilir.\n\nGerekli alanlar:\n- userId (Kullanıcı ID'si)\n- pharmacyId (Eczane ID'si)\n\nHata durumları:\n- 400: Kullanıcının zaten bir eczanesi var\n- 400: Eczanenin zaten bir sahibi var\n- 404: Kullanıcı veya eczane bulunamadı\n- 403: Yetki hatası"
+					},
+					"response": []
+				},
+				{
+					"name": "Kullanıcı-Eczane Bağlantısını Kaldır",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users/60c72b2f9b1d8b2a58c15d86/pharmacy",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"60c72b2f9b1d8b2a58c15d86",
+								"pharmacy"
+							]
+						},
+						"description": "Kullanıcı ve eczane arasındaki bağlantıyı kaldırır (sadece admin yetkisi ile)\n\nNOT: Bu işlem sonrasında hem kullanıcı hem de eczane bağlantısız kalır. Eczane, başka bir kullanıcıya bağlanana kadar kullanılamaz.\n\nHata durumları:\n- 404: Kullanıcı bulunamadı\n- 400: Kullanıcının bir eczanesi yok\n- 403: Yetki hatası"
 					},
 					"response": []
 				}
