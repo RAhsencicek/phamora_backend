@@ -276,20 +276,13 @@ exports.updateTransactionStatus = async (req, res) => {
           buyerInventory.quantity += item.quantity;
           console.log(`Alıcı stoğuna ${item.quantity} adet eklendi`);
         } else {
-          // Yeni envanter kaydı için gerekli alanları ekle
           buyerInventory = new Inventory({
             pharmacy: transaction.buyer,
             medicine: item.medicine,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
-            costPrice: item.unitPrice, // Maliyet fiyatı olarak birim fiyatı kullan
-            batchNumber: item.batchNumber || `TRANSFER-${Date.now()}`,
-            expiryDate: item.expiryDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 yıl sonra
-            minStockLevel: 10,
-            maxStockLevel: 100,
-            isAvailableForTrade: true,
-            status: 'in_stock',
-            reservedQuantity: 0
+            batchNumber: item.batchNumber,
+            expiryDate: item.expiryDate
           });
           console.log(`Alıcı için yeni stok kaydı oluşturuldu: ${item.quantity} adet`);
         }

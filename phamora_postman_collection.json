@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "7a3f8e44-93c8-4f27-a7d9-21834591d234",
 		"name": "Phamora Backend API",
-		"description": "Eczane Yönetim Sistemi API - Güncellenmiş Sürüm v1.0.1",
+		"description": "Eczane Yönetim Sistemi API - Bildirim Sistemi Entegreli v1.1.0\n\n🔔 **YENİ ÖZELLİKLER:**\n- Gerçek zamanlı bildirim sistemi\n- İşlem onaylama/reddetme endpoint'leri\n- Kapsamlı bildirim yönetimi\n- İşlem durumu güncellemeleri\n\n📋 **BİLDİRİM TÜRLERİ:**\n- offer: Yeni işlem teklifleri\n- transaction: İşlem durumu güncellemeleri\n- purchase: Satın alma bildirimleri\n- expiry: Son kullanma tarihi uyarıları\n- system: Sistem bildirimleri\n\n🧪 **TEST KULLANICILARI:**\n- Satıcı: pharmacistId=123123, password=123123\n- Alıcı: pharmacistId=123456, password=password123\n\n📖 Detaylı test rehberi için POSTMAN_BILDIRIM_TEST_REHBERI.md dosyasına bakın.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -1278,7 +1278,7 @@
 		},
 		{
 			"name": "Bildirimler",
-			"description": "Kullanıcı bildirimlerini yönetme işlemleri",
+			"description": "Kullanıcı bildirimlerini yönetme işlemleri - Gerçek zamanlı bildirim sistemi",
 			"item": [
 				{
 					"name": "Tüm Bildirimleri Getir",
@@ -1287,13 +1287,8 @@
 						"header": [
 							{
 								"key": "pharmacistid",
-								"value": "12345678910",
+								"value": "123123",
 								"description": "Kullanıcı kimlik bilgisi"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{authToken}}",
-								"description": "JWT token for authentication"
 							}
 						],
 						"url": {
@@ -1319,16 +1314,94 @@
 								{
 									"key": "isRead",
 									"value": "false",
-									"description": "Okunma durumu (true, false veya tümü için all)"
+									"description": "Okunma durumu (true, false veya tümü için boş bırak)"
 								},
 								{
 									"key": "type",
 									"value": "all",
-									"description": "Bildirim türü (offer, purchase, expiry, system, all)"
+									"description": "Bildirim türü (offer, purchase, transaction, expiry, system)"
 								}
 							]
 						},
-						"description": "Kullanıcının tüm bildirimlerini getirir. Filtreleme ve sayfalama seçenekleri mevcuttur."
+						"description": "Kullanıcının tüm bildirimlerini getirir. Filtreleme ve sayfalama seçenekleri mevcuttur.\n\n**Bildirim Türleri:**\n- `offer`: Yeni işlem teklifleri\n- `purchase`: Satın alma bildirimleri\n- `transaction`: İşlem durumu güncellemeleri\n- `expiry`: Son kullanma tarihi uyarıları\n- `system`: Sistem bildirimleri\n\n**Yanıt Formatı:**\n```json\n{\n  \"success\": true,\n  \"data\": [\n    {\n      \"id\": \"notification_id\",\n      \"title\": \"Yeni İşlem Teklifi\",\n      \"message\": \"HARPUT ECZANESİ eczanesinden Aspirin (5 adet) için yeni bir teklif aldınız.\",\n      \"type\": \"offer\",\n      \"isRead\": false,\n      \"date\": \"2025-05-25T23:29:52.042Z\",\n      \"data\": {\n        \"transactionId\": {\n          \"_id\": \"transaction_id\",\n          \"transactionId\": \"TEST-TXN-123\",\n          \"status\": \"pending\"\n        }\n      }\n    }\n  ],\n  \"pagination\": {\n    \"current\": 1,\n    \"total\": 3,\n    \"count\": 10,\n    \"totalItems\": 25,\n    \"unreadCount\": 7\n  }\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Sadece Okunmamış Bildirimleri Getir",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "123123",
+								"description": "Kullanıcı kimlik bilgisi"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications?isRead=false&limit=50",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "isRead",
+									"value": "false",
+									"description": "Sadece okunmamış bildirimler"
+								},
+								{
+									"key": "limit",
+									"value": "50",
+									"description": "Maksimum bildirim sayısı"
+								}
+							]
+						},
+						"description": "Sadece okunmamış bildirimleri getirir. Mobil uygulamada bildirim sayısını göstermek için kullanılır."
+					},
+					"response": []
+				},
+				{
+					"name": "İşlem Bildirimlerini Getir",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "123123"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications?type=offer&type=transaction&type=purchase",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "offer",
+									"description": "Yeni teklifler"
+								},
+								{
+									"key": "type",
+									"value": "transaction",
+									"description": "İşlem güncellemeleri"
+								},
+								{
+									"key": "type",
+									"value": "purchase",
+									"description": "Satın alma bildirimleri"
+								}
+							]
+						},
+						"description": "Sadece işlemlerle ilgili bildirimleri getirir (teklifler, onaylar, sevkiyat, teslimat vb.)"
 					},
 					"response": []
 				},
@@ -1339,22 +1412,22 @@
 						"header": [
 							{
 								"key": "pharmacistid",
-								"value": "12345678910"
+								"value": "123123"
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/api/notifications/60c72b2f9b1d8b2a58c15d95/read",
+							"raw": "{{baseUrl}}/api/notifications/NOTIFICATION_ID_BURAYA/read",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
 								"notifications",
-								"60c72b2f9b1d8b2a58c15d95",
+								"NOTIFICATION_ID_BURAYA",
 								"read"
 							]
 						},
-						"description": "Belirli bir bildirimi okundu olarak işaretler"
+						"description": "Belirli bir bildirimi okundu olarak işaretler\n\n**Kullanım:**\n1. Önce bildirimleri listeleyin\n2. Okundu işaretlemek istediğiniz bildirimin ID'sini kopyalayın\n3. URL'deki 'NOTIFICATION_ID_BURAYA' kısmını gerçek ID ile değiştirin\n\n**Yanıt:**\n```json\n{\n  \"success\": true,\n  \"message\": \"Bildirim okundu olarak işaretlendi\"\n}\n```"
 					},
 					"response": []
 				},
@@ -1365,7 +1438,7 @@
 						"header": [
 							{
 								"key": "pharmacistid",
-								"value": "12345678910"
+								"value": "123123"
 							}
 						],
 						"url": {
@@ -1379,7 +1452,7 @@
 								"read-all"
 							]
 						},
-						"description": "Kullanıcının tüm bildirimlerini okundu olarak işaretler"
+						"description": "Kullanıcının tüm bildirimlerini okundu olarak işaretler\n\n**Kullanım Senaryosu:**\nKullanıcı \"Tümünü Okundu İşaretle\" butonuna bastığında bu endpoint çağrılır.\n\n**Yanıt:**\n```json\n{\n  \"success\": true,\n  \"message\": \"Tüm bildirimler okundu olarak işaretlendi\",\n  \"updatedCount\": 15\n}\n```"
 					},
 					"response": []
 				},
@@ -1390,21 +1463,21 @@
 						"header": [
 							{
 								"key": "pharmacistid",
-								"value": "12345678910"
+								"value": "123123"
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/api/notifications/60c72b2f9b1d8b2a58c15d95",
+							"raw": "{{baseUrl}}/api/notifications/NOTIFICATION_ID_BURAYA",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
 								"notifications",
-								"60c72b2f9b1d8b2a58c15d95"
+								"NOTIFICATION_ID_BURAYA"
 							]
 						},
-						"description": "Belirli bir bildirimi siler"
+						"description": "Belirli bir bildirimi siler\n\n**Kullanım:**\n1. Önce bildirimleri listeleyin\n2. Silmek istediğiniz bildirimin ID'sini kopyalayın\n3. URL'deki 'NOTIFICATION_ID_BURAYA' kısmını gerçek ID ile değiştirin"
 					},
 					"response": []
 				},
@@ -1419,12 +1492,12 @@
 							},
 							{
 								"key": "pharmacistid",
-								"value": "12345678910"
+								"value": "123123"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"notificationIds\": [\n    \"60c72b2f9b1d8b2a58c15d95\",\n    \"60c72b2f9b1d8b2a58c15d96\"\n  ]\n}"
+							"raw": "{\n  \"notificationIds\": [\n    \"NOTIFICATION_ID_1\",\n    \"NOTIFICATION_ID_2\",\n    \"NOTIFICATION_ID_3\"\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/notifications",
@@ -1436,7 +1509,32 @@
 								"notifications"
 							]
 						},
-						"description": "Birden fazla bildirimi siler"
+						"description": "Birden fazla bildirimi siler\n\n**Kullanım:**\n1. Önce bildirimleri listeleyin\n2. Silmek istediğiniz bildirimlerin ID'lerini toplayın\n3. Body'deki 'NOTIFICATION_ID_X' kısımlarını gerçek ID'ler ile değiştirin\n\n**Örnek Body:**\n```json\n{\n  \"notificationIds\": [\n    \"674b123456789abcdef12345\",\n    \"674b123456789abcdef12346\",\n    \"674b123456789abcdef12347\"\n  ]\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Bildirim İstatistikleri",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "123123"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"stats"
+							]
+						},
+						"description": "Kullanıcının bildirim istatistiklerini getirir\n\n**Yanıt Formatı:**\n```json\n{\n  \"success\": true,\n  \"data\": {\n    \"total\": 45,\n    \"unread\": 12,\n    \"read\": 33,\n    \"byType\": {\n      \"offer\": 8,\n      \"transaction\": 15,\n      \"purchase\": 10,\n      \"expiry\": 7,\n      \"system\": 5\n    },\n    \"recent\": {\n      \"today\": 3,\n      \"thisWeek\": 12,\n      \"thisMonth\": 28\n    }\n  }\n}\n```"
 					},
 					"response": []
 				}
@@ -1505,9 +1603,9 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "https://phamorabackend-production.up.railway.app",
+			"value": "http://localhost:3000",
 			"type": "string",
-			"description": "API temel URL'i"
+			"description": "API temel URL'i - Local development server"
 		},
 		{
 			"key": "authToken",
@@ -1517,9 +1615,9 @@
 		},
 		{
 			"key": "pharmacistId",
-			"value": "12345678910",
+			"value": "123123",
 			"type": "string",
-			"description": "Eczacı kimlik numarası"
+			"description": "Test eczacı kimlik numarası (Satıcı)"
 		}
 	]
 } 
