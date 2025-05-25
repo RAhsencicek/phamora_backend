@@ -282,6 +282,7 @@ exports.updateTransactionStatus = async (req, res) => {
             medicine: item.medicine,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
+            costPrice: item.unitPrice, // Maliyet fiyatı olarak birim fiyatı kullan
             batchNumber: item.batchNumber || `TRANSFER-${Date.now()}`,
             expiryDate: item.expiryDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 yıl sonra
             minStockLevel: 10,
