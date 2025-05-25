@@ -942,6 +942,74 @@
 					"response": []
 				},
 				{
+					"name": "İşlem Onayla",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"note\": \"İşlem onaylandı, sevkiyata hazır\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/60c72b2f9b1d8b2a58c15d91/confirm",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"60c72b2f9b1d8b2a58c15d91",
+								"confirm"
+							]
+						},
+						"description": "Beklemedeki bir işlemi onaylar (sadece alıcı eczane)\n\nBu endpoint:\n- Sadece 'pending' durumundaki işlemler için kullanılabilir\n- Sadece alıcı eczane tarafından çağrılabilir\n- İşlemi 'confirmed' durumuna geçirir\n- Stokları rezerve eder\n- Satıcıya bildirim gönderir\n\nİsteğe bağlı alanlar:\n- note (Onay notu)"
+					},
+					"response": []
+				},
+				{
+					"name": "İşlem Reddet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Stok yetersiz, farklı bir tarihte tekrar deneyin\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/transactions/60c72b2f9b1d8b2a58c15d91/reject",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"transactions",
+								"60c72b2f9b1d8b2a58c15d91",
+								"reject"
+							]
+						},
+						"description": "Beklemedeki bir işlemi reddeder (sadece alıcı eczane)\n\nBu endpoint:\n- Sadece 'pending' durumundaki işlemler için kullanılabilir\n- Sadece alıcı eczane tarafından çağrılabilir\n- İşlemi 'cancelled' durumuna geçirir\n- Satıcıya bildirim gönderir\n\nİsteğe bağlı alanlar:\n- reason (Red sebebi)"
+					},
+					"response": []
+				},
+				{
 					"name": "İşlem Durumunu Güncelle",
 					"request": {
 						"method": "PATCH",
@@ -957,7 +1025,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"status\": \"completed\",\n  \"notes\": \"Teslimat tamamlandı\"\n}"
+							"raw": "{\n  \"status\": \"completed\",\n  \"note\": \"Teslimat tamamlandı\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/transactions/60c72b2f9b1d8b2a58c15d91/status",

@@ -276,13 +276,19 @@ exports.updateTransactionStatus = async (req, res) => {
           buyerInventory.quantity += item.quantity;
           console.log(`Alıcı stoğuna ${item.quantity} adet eklendi`);
         } else {
+          // Yeni envanter kaydı için gerekli alanları ekle
           buyerInventory = new Inventory({
             pharmacy: transaction.buyer,
             medicine: item.medicine,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
-            batchNumber: item.batchNumber,
-            expiryDate: item.expiryDate
+            batchNumber: item.batchNumber || `TRANSFER-${Date.now()}`,
+            expiryDate: item.expiryDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 yıl sonra
+            minStockLevel: 10,
+            maxStockLevel: 100,
+            isAvailableForTrade: true,
+            status: 'in_stock',
+            reservedQuantity: 0
           });
           console.log(`Alıcı için yeni stok kaydı oluşturuldu: ${item.quantity} adet`);
         }
@@ -1500,6 +1506,233 @@ exports.getTransactionStats = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'İşlem istatistikleri alınırken hata oluştu',
+      error: error.message
+    });
+  }
+};
+
+// İşlem onaylama (alıcı tarafından)
+exports.confirmTransaction = async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const { note } = req.body;
+
+    // Kullanıcı ID'sini al
+    const pharmacistId = req.headers.pharmacistid;
+    
+    console.log(`İşlem onaylama isteği: İşlem ID: ${transactionId}, Kullanıcı ID: ${pharmacistId}`);
+    
+    if (!pharmacistId) {
+      return res.status(400).json({
+        success: false,
+        message: 'PharmacistId header parametresi eksik'
+      });
+    }
+    
+    // User'ı direkt olarak pharmacistId ile bul
+    const user = await User.findOne({ pharmacistId }).populate('pharmacy');
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: `${pharmacistId} ID'li kullanıcı bulunamadı`
+      });
+    }
+    
+    // Kullanıcının eczanesini kontrol et
+    if (!user.pharmacy) {
+      return res.status(400).json({
+        success: false,
+        message: 'Bu kullanıcıya atanmış bir eczane bulunamadı'
+      });
+    }
+    
+    const pharmacyId = user.pharmacy._id instanceof ObjectId ? user.pharmacy._id : new ObjectId(user.pharmacy._id.toString());
+
+    const transaction = await Transaction.findById(transactionId);
+    
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        message: 'İşlem bulunamadı'
+      });
+    }
+
+    // Sadece alıcı eczane onaylayabilir
+    if (!transaction.buyer.equals(pharmacyId)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bu işlemi onaylama yetkiniz yok. Sadece alıcı eczane onaylayabilir.'
+      });
+    }
+
+    // Sadece pending durumundaki işlemler onaylanabilir
+    if (transaction.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        message: `Bu işlem zaten ${transaction.status} durumunda. Sadece beklemedeki işlemler onaylanabilir.`
+      });
+    }
+
+    // Stok kontrolü
+    for (const item of transaction.items) {
+      const inventory = await Inventory.findOne({
+        pharmacy: transaction.seller,
+        medicine: item.medicine
+      });
+      
+      if (!inventory) {
+        return res.status(400).json({
+          success: false,
+          message: `${item.medicine} ilacı için stok kaydı bulunamadı`
+        });
+      }
+      
+      if (inventory.availableQuantity < item.quantity) {
+        return res.status(400).json({
+          success: false,
+          message: `${item.medicine} için yeterli stok bulunmuyor. Mevcut: ${inventory.availableQuantity}, İstenen: ${item.quantity}`
+        });
+      }
+    }
+
+    // İşlemi onayla
+    transaction.status = 'confirmed';
+    
+    // Timeline'a ekle
+    transaction.timeline.push({
+      status: 'confirmed',
+      date: new Date(),
+      note: note || 'İşlem alıcı tarafından onaylandı',
+      updatedBy: user._id
+    });
+
+    // Stokları rezerve et
+    for (const item of transaction.items) {
+      const inventory = await Inventory.findOne({
+        pharmacy: transaction.seller,
+        medicine: item.medicine
+      });
+      
+      if (inventory) {
+        inventory.reservedQuantity += item.quantity;
+        await inventory.save();
+        console.log(`${item.medicine} ilacından ${item.quantity} adet rezerve edildi`);
+      }
+    }
+
+    await transaction.save();
+    await transaction.populate('seller buyer items.medicine');
+    
+    // Satıcıya bildirim gönder
+    await notificationController.createTransactionNotification(req, transaction, 'confirmed');
+
+    res.json({
+      success: true,
+      message: 'İşlem başarıyla onaylandı',
+      data: transaction
+    });
+  } catch (error) {
+    console.error('İşlem onaylama hatası:', error);
+    res.status(500).json({
+      success: false,
+      message: 'İşlem onaylanırken hata oluştu',
+      error: error.message
+    });
+  }
+};
+
+// İşlem reddetme (alıcı tarafından)
+exports.rejectTransaction = async (req, res) => {
+  try {
+    const { transactionId } = req.params;
+    const { reason } = req.body;
+
+    // Kullanıcı ID'sini al
+    const pharmacistId = req.headers.pharmacistid;
+    
+    console.log(`İşlem reddetme isteği: İşlem ID: ${transactionId}, Kullanıcı ID: ${pharmacistId}`);
+    
+    if (!pharmacistId) {
+      return res.status(400).json({
+        success: false,
+        message: 'PharmacistId header parametresi eksik'
+      });
+    }
+    
+    // User'ı direkt olarak pharmacistId ile bul
+    const user = await User.findOne({ pharmacistId }).populate('pharmacy');
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: `${pharmacistId} ID'li kullanıcı bulunamadı`
+      });
+    }
+    
+    // Kullanıcının eczanesini kontrol et
+    if (!user.pharmacy) {
+      return res.status(400).json({
+        success: false,
+        message: 'Bu kullanıcıya atanmış bir eczane bulunamadı'
+      });
+    }
+    
+    const pharmacyId = user.pharmacy._id instanceof ObjectId ? user.pharmacy._id : new ObjectId(user.pharmacy._id.toString());
+
+    const transaction = await Transaction.findById(transactionId);
+    
+    if (!transaction) {
+      return res.status(404).json({
+        success: false,
+        message: 'İşlem bulunamadı'
+      });
+    }
+
+    // Sadece alıcı eczane reddedebilir
+    if (!transaction.buyer.equals(pharmacyId)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Bu işlemi reddetme yetkiniz yok. Sadece alıcı eczane reddedebilir.'
+      });
+    }
+
+    // Sadece pending durumundaki işlemler reddedilebilir
+    if (transaction.status !== 'pending') {
+      return res.status(400).json({
+        success: false,
+        message: `Bu işlem zaten ${transaction.status} durumunda. Sadece beklemedeki işlemler reddedilebilir.`
+      });
+    }
+
+    // İşlemi iptal et
+    transaction.status = 'cancelled';
+    transaction.cancellationReason = reason || 'Alıcı tarafından reddedildi';
+    
+    // Timeline'a ekle
+    transaction.timeline.push({
+      status: 'cancelled',
+      date: new Date(),
+      note: `İşlem alıcı tarafından reddedildi. Sebep: ${reason || 'Belirtilmedi'}`,
+      updatedBy: user._id
+    });
+
+    await transaction.save();
+    await transaction.populate('seller buyer items.medicine');
+    
+    // Satıcıya bildirim gönder
+    await notificationController.createTransactionNotification(req, transaction, 'cancelled');
+
+    res.json({
+      success: true,
+      message: 'İşlem başarıyla reddedildi',
+      data: transaction
+    });
+  } catch (error) {
+    console.error('İşlem reddetme hatası:', error);
+    res.status(500).json({
+      success: false,
+      message: 'İşlem reddedilirken hata oluştu',
       error: error.message
     });
   }

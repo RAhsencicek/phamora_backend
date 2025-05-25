@@ -65,7 +65,7 @@ const inventorySchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['in_stock', 'reserved', 'expired', 'out_of_stock'],
+    enum: ['in_stock', 'low_stock', 'reserved', 'expired', 'out_of_stock'],
     default: 'in_stock'
   },
   notes: String,

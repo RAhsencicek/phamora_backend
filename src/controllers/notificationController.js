@@ -347,37 +347,136 @@ exports.createTransactionNotification = async (req, transaction, status) => {
     
     // İlaçları bir araya getir
     const medicineNames = transaction.items.map(item => item.medicine.name).join(', ');
+    const totalItems = transaction.items.reduce((sum, item) => sum + item.quantity, 0);
     
-    // Bildirim oluştur (alıcı veya satıcı için)
-    let notification = null;
+    // Bildirim oluştur (durum ve kullanıcıya göre)
+    let notifications = [];
     
     switch(status) {
       case 'pending':
-        // Alıcıya bildirim
+        // Satıcı işlem oluşturduğunda alıcıya bildirim
         if (buyerUser && currentUser._id.toString() !== buyerUser._id.toString()) {
-          notification = await this.createNotification(buyerUser._id, {
-            title: 'Yeni Teklif',
-            message: `${transaction.seller.name} eczanesinden "${medicineNames}" için yeni bir teklif aldınız.`,
+          const notification = await this.createNotification(buyerUser._id, {
+            title: 'Yeni İşlem Teklifi',
+            message: `${transaction.seller.name} eczanesinden "${medicineNames}" (${totalItems} adet) için yeni bir teklif aldınız. Onaylamak veya reddetmek için işlem detaylarını inceleyin.`,
             type: 'offer',
             data: { transactionId: transaction._id }
           });
+          notifications.push(notification);
+        }
+        break;
+        
+      case 'confirmed':
+        // Alıcı onayladığında satıcıya bildirim
+        if (sellerUser && currentUser._id.toString() !== sellerUser._id.toString()) {
+          const notification = await this.createNotification(sellerUser._id, {
+            title: 'İşlem Onaylandı',
+            message: `${transaction.buyer.name} eczanesi "${medicineNames}" (${totalItems} adet) için teklifinizi onayladı. Sevkiyata hazırlayabilirsiniz.`,
+            type: 'transaction',
+            data: { transactionId: transaction._id }
+          });
+          notifications.push(notification);
+        }
+        break;
+        
+      case 'in_transit':
+        // Satıcı sevkiyata verdiğinde alıcıya bildirim
+        if (buyerUser && currentUser._id.toString() !== buyerUser._id.toString()) {
+          const notification = await this.createNotification(buyerUser._id, {
+            title: 'Sipariş Sevk Edildi',
+            message: `${transaction.seller.name} eczanesi "${medicineNames}" (${totalItems} adet) siparişinizi sevk etti. Yakında teslim alacaksınız.`,
+            type: 'purchase',
+            data: { transactionId: transaction._id }
+          });
+          notifications.push(notification);
+        }
+        break;
+        
+      case 'delivered':
+        // Satıcı teslim edildi işaretlediğinde alıcıya bildirim
+        if (buyerUser && currentUser._id.toString() !== buyerUser._id.toString()) {
+          const notification = await this.createNotification(buyerUser._id, {
+            title: 'Sipariş Teslim Edildi',
+            message: `${transaction.seller.name} eczanesinden "${medicineNames}" (${totalItems} adet) siparişiniz teslim edildi. Lütfen kontrol edin ve onaylayın.`,
+            type: 'purchase',
+            data: { transactionId: transaction._id }
+          });
+          notifications.push(notification);
         }
         break;
         
       case 'completed':
-        // Alıcıya bildirim
+        // İşlem tamamlandığında her iki tarafa da bildirim
+        if (sellerUser) {
+          const sellerNotification = await this.createNotification(sellerUser._id, {
+            title: 'İşlem Tamamlandı',
+            message: `${transaction.buyer.name} eczanesi ile "${medicineNames}" (${totalItems} adet) için işleminiz başarıyla tamamlandı.`,
+            type: 'transaction',
+            data: { transactionId: transaction._id }
+          });
+          notifications.push(sellerNotification);
+        }
+        
         if (buyerUser) {
-          notification = await this.createNotification(buyerUser._id, {
-            title: 'Sipariş Tamamlandı',
-            message: `${medicineNames} siparişiniz başarıyla tamamlandı. Satıcı ile iletişime geçebilirsiniz.`,
+          const buyerNotification = await this.createNotification(buyerUser._id, {
+            title: 'İşlem Tamamlandı',
+            message: `${transaction.seller.name} eczanesi ile "${medicineNames}" (${totalItems} adet) için işleminiz başarıyla tamamlandı.`,
             type: 'purchase',
             data: { transactionId: transaction._id }
           });
+          notifications.push(buyerNotification);
+        }
+        break;
+        
+      case 'cancelled':
+        // İşlem iptal edildiğinde karşı tarafa bildirim
+        if (currentUser._id.toString() === sellerUser?._id.toString() && buyerUser) {
+          // Satıcı iptal etti, alıcıya bildirim
+          const notification = await this.createNotification(buyerUser._id, {
+            title: 'İşlem İptal Edildi',
+            message: `${transaction.seller.name} eczanesi "${medicineNames}" (${totalItems} adet) için işlemi iptal etti.`,
+            type: 'transaction',
+            data: { transactionId: transaction._id }
+          });
+          notifications.push(notification);
+        } else if (currentUser._id.toString() === buyerUser?._id.toString() && sellerUser) {
+          // Alıcı iptal etti, satıcıya bildirim
+          const notification = await this.createNotification(sellerUser._id, {
+            title: 'İşlem İptal Edildi',
+            message: `${transaction.buyer.name} eczanesi "${medicineNames}" (${totalItems} adet) için işlemi iptal etti.`,
+            type: 'transaction',
+            data: { transactionId: transaction._id }
+          });
+          notifications.push(notification);
+        }
+        break;
+        
+      case 'refunded':
+        // İade durumunda her iki tarafa da bildirim
+        if (sellerUser) {
+          const sellerNotification = await this.createNotification(sellerUser._id, {
+            title: 'İşlem İade Edildi',
+            message: `${transaction.buyer.name} eczanesi ile "${medicineNames}" (${totalItems} adet) için işlem iade edildi.`,
+            type: 'transaction',
+            data: { transactionId: transaction._id }
+          });
+          notifications.push(sellerNotification);
+        }
+        
+        if (buyerUser) {
+          const buyerNotification = await this.createNotification(buyerUser._id, {
+            title: 'İşlem İade Edildi',
+            message: `${transaction.seller.name} eczanesi ile "${medicineNames}" (${totalItems} adet) için işlem iade edildi.`,
+            type: 'purchase',
+            data: { transactionId: transaction._id }
+          });
+          notifications.push(buyerNotification);
         }
         break;
     }
     
-    return notification;
+    console.log(`${notifications.length} bildirim gönderildi - Durum: ${status}`);
+    return notifications;
   } catch (error) {
     console.error('İşlem bildirimi oluşturma hatası:', error);
     return null;
