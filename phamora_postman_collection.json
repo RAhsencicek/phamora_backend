@@ -1603,7 +1603,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:3000",
+			"value": "https://phamorabackend-production.up.railway.app",
 			"type": "string",
 			"description": "API temel URL'i - Local development server"
 		},
