@@ -1,0 +1,330 @@
+[{
+  "_id": {
+    "$oid": "6832d630edb7ca1990637b9f"
+  },
+  "transactionId": "TRX174816208068918",
+  "seller": {
+    "$oid": "683253ac937a416bd272ab67"
+  },
+  "buyer": {
+    "$oid": "68324ded937a416bd272ab1b"
+  },
+  "items": [
+    {
+      "medicine": {
+        "$oid": "6832cb03edb7ca1990637b15"
+      },
+      "quantity": 5,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 69.99
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 349.96
+      },
+      "batchNumber": "CIP2026053",
+      "expiryDate": {
+        "$date": "2026-06-25T07:49:32.434Z"
+      }
+    }
+  ],
+  "status": "pending",
+  "paymentMethod": "credit",
+  "totalAmount": {
+    "currency": "TRY",
+    "amount": 349.96
+  },
+  "notes": "Depoda bulunmayan ilaçlar için özel sipariş",
+  "createdAt": {
+    "$date": "2025-03-07T02:41:43.041Z"
+  },
+  "completedAt": null
+},
+{
+  "_id": {
+    "$oid": "6832d630edb7ca1990637ba1"
+  },
+  "transactionId": "TRX174816208068920",
+  "seller": {
+    "$oid": "683253ac937a416bd272ab67"
+  },
+  "buyer": {
+    "$oid": "68324e12937a416bd272ab45"
+  },
+  "items": [
+    {
+      "medicine": {
+        "$oid": "6832cb03edb7ca1990637b16"
+      },
+      "quantity": 27,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 56.28
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 1519.48
+      },
+      "batchNumber": "VEN2025389",
+      "expiryDate": {
+        "$date": "2025-08-25T07:49:32.279Z"
+      }
+    }
+  ],
+  "status": "delivered",
+  "paymentMethod": "mobile",
+  "totalAmount": {
+    "currency": "TRY",
+    "amount": 1519.48
+  },
+  "notes": "Toplu alım indirimi",
+  "createdAt": {
+    "$date": "2025-04-22T18:39:28.912Z"
+  },
+  "completedAt": null
+},
+{
+  "_id": {
+    "$oid": "6832d630edb7ca1990637bb7"
+  },
+  "transactionId": "TRX174816208069142",
+  "seller": {
+    "$oid": "683253ac937a416bd272ab67"
+  },
+  "buyer": {
+    "$oid": "68324e17937a416bd272ab4c"
+  },
+  "items": [
+    {
+      "medicine": {
+        "$oid": "6832cb03edb7ca1990637b18"
+      },
+      "quantity": 19,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 18.54
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 352.26
+      },
+      "batchNumber": "COU2026390",
+      "expiryDate": {
+        "$date": "2026-02-25T07:49:32.588Z"
+      }
+    }
+  ],
+  "status": "pending",
+  "paymentMethod": "credit",
+  "totalAmount": {
+    "currency": "TRY",
+    "amount": 352.26
+  },
+  "notes": "Yerel sağlık müdürlüğü talebi",
+  "createdAt": {
+    "$date": "2025-05-03T03:42:02.373Z"
+  },
+  "completedAt": null
+},
+{
+  "_id": {
+    "$oid": "6832da8bedb7ca1990637bde"
+  },
+  "transactionId": "TRX174816318968218",
+  "seller": {
+    "$oid": "683253ac937a416bd272ab67"
+  },
+  "buyer": {
+    "$oid": "68324e1d937a416bd272ab53"
+  },
+  "items": [
+    {
+      "medicine": {
+        "$oid": "6832cb04edb7ca1990637b1b"
+      },
+      "quantity": 12,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 31.8
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 381.56
+      },
+      "batchNumber": "XAN2025973",
+      "expiryDate": {
+        "$date": "2025-10-25T07:49:32.896Z"
+      }
+    },
+    {
+      "medicine": {
+        "$oid": "6832cb03edb7ca1990637b17"
+      },
+      "quantity": 3,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 26.22
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 78.65
+      },
+      "batchNumber": "EUT2025510",
+      "expiryDate": {
+        "$date": "2025-10-25T07:49:32.742Z"
+      }
+    },
+    {
+      "medicine": {
+        "$oid": "6832cb03edb7ca1990637b16"
+      },
+      "quantity": 30,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 56.28
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 1688.31
+      },
+      "batchNumber": "VEN2025389",
+      "expiryDate": {
+        "$date": "2025-08-25T07:49:32.279Z"
+      }
+    }
+  ],
+  "status": "confirmed",
+  "paymentMethod": "mobile",
+  "totalAmount": {
+    "currency": "TRY",
+    "amount": 2148.53
+  },
+  "notes": "Yerel sağlık müdürlüğü talebi",
+  "createdAt": {
+    "$date": "2025-05-03T15:26:00.735Z"
+  },
+  "completedAt": null
+},
+{
+  "_id": {
+    "$oid": "6832da8bedb7ca1990637bef"
+  },
+  "transactionId": "TRX174816318974135",
+  "seller": {
+    "$oid": "683253ac937a416bd272ab67"
+  },
+  "buyer": {
+    "$oid": "68324da9937a416bd272aadc"
+  },
+  "items": [
+    {
+      "medicine": {
+        "$oid": "6832cb03edb7ca1990637b15"
+      },
+      "quantity": 34,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 69.99
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 2379.76
+      },
+      "batchNumber": "CIP2026053",
+      "expiryDate": {
+        "$date": "2026-06-25T07:49:32.434Z"
+      }
+    }
+  ],
+  "status": "pending",
+  "paymentMethod": "cash",
+  "totalAmount": {
+    "currency": "TRY",
+    "amount": 2379.76
+  },
+  "notes": "Süresi yaklaşan ilaçların transferi",
+  "createdAt": {
+    "$date": "2025-03-03T14:25:48.053Z"
+  },
+  "completedAt": null
+},
+{
+  "_id": {
+    "$oid": "6832da8bedb7ca1990637bf9"
+  },
+  "transactionId": "TRX174816318978045",
+  "seller": {
+    "$oid": "683253ac937a416bd272ab67"
+  },
+  "buyer": {
+    "$oid": "68324dff937a416bd272ab30"
+  },
+  "items": [
+    {
+      "medicine": {
+        "$oid": "6832cb04edb7ca1990637b1b"
+      },
+      "quantity": 10,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 31.8
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 317.97
+      },
+      "batchNumber": "XAN2025973",
+      "expiryDate": {
+        "$date": "2025-10-25T07:49:32.896Z"
+      }
+    },
+    {
+      "medicine": {
+        "$oid": "6832cb03edb7ca1990637b14"
+      },
+      "quantity": 9,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 78.05
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 702.43
+      },
+      "batchNumber": "AUG2026666",
+      "expiryDate": {
+        "$date": "2026-08-25T07:49:33.050Z"
+      }
+    },
+    {
+      "medicine": {
+        "$oid": "6832cb03edb7ca1990637b17"
+      },
+      "quantity": 6,
+      "unitPrice": {
+        "currency": "TRY",
+        "amount": 26.22
+      },
+      "totalPrice": {
+        "currency": "TRY",
+        "amount": 157.3
+      },
+      "batchNumber": "EUT2025510",
+      "expiryDate": {
+        "$date": "2025-10-25T07:49:32.742Z"
+      }
+    }
+  ],
+  "status": "pending",
+  "paymentMethod": "debit",
+  "totalAmount": {
+    "currency": "TRY",
+    "amount": 1177.7
+  },
+  "notes": "Süresi yaklaşan ilaçların transferi",
+  "createdAt": {
+    "$date": "2025-04-02T00:43:53.845Z"
+  },
+  "completedAt": null
+}]

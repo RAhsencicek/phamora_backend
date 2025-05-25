@@ -1,4 +1,6 @@
 const axios = require('axios');
+const Pharmacy = require('../models/Pharmacy');
+const Inventory = require('../models/Inventory');
 const API_KEY = process.env.NOSY_API_KEY || 'XAkQiDBCyrf4bBmd90RDsswsLS1X0j6IJkyGoYyQ5x4qf9BsNvKuLNiLrJ5A';
 const BASE_URL = 'https://www.nosyapi.com/apiv2/service/pharmacies-on-duty';
 
@@ -22,6 +24,58 @@ exports.getCities = async (req, res) => {
 // Nöbetçi eczaneleri getiren fonksiyon
 exports.getPharmacies = async (req, res) => {
   try {
+    // Önce veritabanında kayıtlı nöbetçi eczaneleri kontrol et
+    const filter = { isActive: true, isOnDuty: true };
+    
+    // Şehir filtreleme
+    if (req.query.city) {
+      filter['address.city'] = req.query.city;
+    }
+    
+    // İlçe filtreleme
+    if (req.query.district) {
+      filter['address.district'] = req.query.district;
+    }
+    
+    const registeredPharmacies = await Pharmacy.find(filter)
+      .populate('owner', 'name surname pharmacistId')
+      .select('-__v');
+    
+    if (registeredPharmacies && registeredPharmacies.length > 0) {
+      // Eczanelerin envanter bilgilerini al
+      const pharmaciesWithInventory = await Promise.all(
+        registeredPharmacies.map(async (pharmacy) => {
+          // Her eczane için envanter bilgilerini çek
+          const inventoryItems = await Inventory.find({ pharmacy: pharmacy._id })
+            .populate('medicine', 'name description price barcode dosageForm')
+            .lean();
+          
+          // availableMedications alanı oluştur
+          const availableMedications = inventoryItems.map(item => ({
+            name: item.medicine.name,
+            description: item.medicine.description || '',
+            price: item.unitPrice.amount,
+            quantity: item.quantity,
+            expiryDate: item.expiryDate,
+            imageURL: item.medicine.images && item.medicine.images.length > 0 ? item.medicine.images[0] : null,
+            status: item.isAvailableForTrade ? 'forSale' : 'available'
+          }));
+          
+          // Eczane nesnesini kopyala ve availableMedications alanını ekle
+          const pharmacyObj = pharmacy.toObject();
+          pharmacyObj.availableMedications = availableMedications;
+          
+          return pharmacyObj;
+        })
+      );
+      
+      return res.json({
+        success: true,
+        data: pharmaciesWithInventory
+      });
+    }
+    
+    // Eğer veritabanında nöbetçi eczane bulunamazsa API'den sorgula
     const response = await axios.get(`${BASE_URL}`, {
       params: { 
         apiKey: API_KEY,
@@ -52,6 +106,56 @@ exports.getNearbyPharmacies = async (req, res) => {
   }
 
   try {
+    // Önce veritabanında kayıtlı eczaneleri kontrol et
+    const registeredPharmacies = await Pharmacy.find({
+      location: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [parseFloat(longitude), parseFloat(latitude)]
+          },
+          $maxDistance: 5000 // 5 km içindeki eczaneler
+        }
+      }
+    })
+    .populate('owner', 'name surname pharmacistId')
+    .select('-__v');
+
+    if (registeredPharmacies && registeredPharmacies.length > 0) {
+      // Eczanelerin envanter bilgilerini al
+      const pharmaciesWithInventory = await Promise.all(
+        registeredPharmacies.map(async (pharmacy) => {
+          // Her eczane için envanter bilgilerini çek
+          const inventoryItems = await Inventory.find({ pharmacy: pharmacy._id })
+            .populate('medicine', 'name description price barcode dosageForm')
+            .lean();
+          
+          // availableMedications alanı oluştur
+          const availableMedications = inventoryItems.map(item => ({
+            name: item.medicine.name,
+            description: item.medicine.description || '',
+            price: item.unitPrice.amount,
+            quantity: item.quantity,
+            expiryDate: item.expiryDate,
+            imageURL: item.medicine.images && item.medicine.images.length > 0 ? item.medicine.images[0] : null,
+            status: item.isAvailableForTrade ? 'forSale' : 'available'
+          }));
+          
+          // Eczane nesnesini kopyala ve availableMedications alanını ekle
+          const pharmacyObj = pharmacy.toObject();
+          pharmacyObj.availableMedications = availableMedications;
+          
+          return pharmacyObj;
+        })
+      );
+      
+      return res.json({
+        success: true,
+        data: pharmaciesWithInventory
+      });
+    }
+
+    // Eğer veritabanında yakın eczane bulunamazsa API'den sorgula
     const response = await axios.get(`${BASE_URL}/locations`, {
       params: { 
         apiKey: API_KEY,
@@ -90,6 +194,43 @@ exports.getPharmacyCounts = async (req, res) => {
 // Tüm Türkiye ve Kıbrıs'taki nöbetçi eczaneleri getiren fonksiyon
 exports.getAllPharmacies = async (req, res) => {
   try {
+    // Veritabanında kayıtlı olan tüm eczaneleri getir
+    const registeredPharmacies = await Pharmacy.find({})
+      .populate('owner', 'name surname pharmacistId')
+      .select('-__v');
+
+    if (registeredPharmacies && registeredPharmacies.length > 0) {
+      // Eczanelerin envanter bilgilerini al
+      const pharmaciesWithInventory = await Promise.all(
+        registeredPharmacies.map(async (pharmacy) => {
+          // Her eczane için envanter bilgilerini çek
+          const inventoryItems = await Inventory.find({ pharmacy: pharmacy._id })
+            .populate('medicine', 'name description price barcode dosageForm')
+            .lean();
+          
+          // availableMedications alanı oluştur
+          const availableMedications = inventoryItems.map(item => ({
+            name: item.medicine.name,
+            description: item.medicine.description || '',
+            price: item.unitPrice.amount,
+            quantity: item.quantity,
+            expiryDate: item.expiryDate,
+            imageURL: item.medicine.images && item.medicine.images.length > 0 ? item.medicine.images[0] : null,
+            status: item.isAvailableForTrade ? 'forSale' : 'available'
+          }));
+          
+          // Eczane nesnesini kopyala ve availableMedications alanını ekle
+          const pharmacyObj = pharmacy.toObject();
+          pharmacyObj.availableMedications = availableMedications;
+          
+          return pharmacyObj;
+        })
+      );
+      
+      return res.json(pharmaciesWithInventory);
+    }
+    
+    // Eğer veritabanında kayıtlı eczane yoksa API'den nöbetçi eczaneleri getir
     const response = await axios.get(`${BASE_URL}/all`, {
       params: { apiKey: API_KEY }
     });

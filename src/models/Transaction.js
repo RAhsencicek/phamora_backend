@@ -9,31 +9,17 @@ const transactionSchema = new mongoose.Schema({
   type: {
     type: String,
     enum: ['sale', 'purchase', 'exchange', 'transfer'],
-    required: true
+    default: 'transfer'
   },
   seller: {
-    pharmacy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Pharmacy',
-      required: true
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pharmacy',
+    required: true
   },
   buyer: {
-    pharmacy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Pharmacy',
-      required: true
-    },
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true
-    }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pharmacy',
+    required: true
   },
   items: [{
     medicine: {
@@ -68,7 +54,7 @@ const transactionSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['cash', 'bank_transfer', 'credit_card', 'debit_card', 'crypto', 'trade_credit'],
+    enum: ['cash', 'bank_transfer', 'credit_card', 'debit_card', 'crypto', 'trade_credit', 'credit', 'debit', 'mobile'],
     default: 'bank_transfer'
   },
   paymentStatus: {
@@ -137,8 +123,8 @@ const transactionSchema = new mongoose.Schema({
 
 // İndeksler
 transactionSchema.index({ transactionId: 1 }, { unique: true });
-transactionSchema.index({ 'seller.pharmacy': 1 });
-transactionSchema.index({ 'buyer.pharmacy': 1 });
+transactionSchema.index({ seller: 1 });
+transactionSchema.index({ buyer: 1 });
 transactionSchema.index({ status: 1 });
 transactionSchema.index({ type: 1 });
 transactionSchema.index({ createdAt: -1 });

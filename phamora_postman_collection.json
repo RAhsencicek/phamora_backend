@@ -1,7 +1,8 @@
 {
 	"info": {
+		"_postman_id": "7a3f8e44-93c8-4f27-a7d9-21834591d234",
 		"name": "Phamora Backend API",
-		"description": "Eczane Yönetim Sistemi API",
+		"description": "Eczane Yönetim Sistemi API - Güncellenmiş Sürüm v1.0.1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -77,18 +78,46 @@
 					"name": "Tüm İlaçları Listele",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"description": "İçerik tipi"
+							}
+						],
 						"url": {
-							"raw": "{{baseUrl}}/api/medicines",
+							"raw": "{{baseUrl}}/api/medicines?page=1&limit=20&sort=name&order=asc",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
 								"medicines"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Sayfa numarası"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Sayfa başına ilaç sayısı"
+								},
+								{
+									"key": "sort",
+									"value": "name",
+									"description": "Sıralama alanı"
+								},
+								{
+									"key": "order",
+									"value": "asc",
+									"description": "Sıralama yönü (asc/desc)"
+								}
 							]
 						},
-						"description": "Tüm ilaçları listeler"
+						"description": "Tüm ilaçları listeler. Sayfalama ve sıralama seçenekleri sunar."
 					},
 					"response": []
 				},
@@ -321,7 +350,13 @@
 						"header": [
 							{
 								"key": "pharmacistid",
-								"value": "12345678910"
+								"value": "12345678910",
+								"description": "Kullanıcı kimlik bilgisi"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"description": "JWT token for authentication"
 							}
 						],
 						"url": {
@@ -599,7 +634,7 @@
 								}
 							]
 						},
-						"description": "İl ve ilçeye göre nöbetçi eczaneleri listeler"
+						"description": "İl ve ilçeye göre nöbetçi eczaneleri listeler. Veritabanında kayıtlı olan eczaneler için, eczanenin envanter bilgisi de availableMedications alanında döndürülür. Bu alan, her eczanenin envanterinde bulunan ilaçların listesini içerir.\n\nDönen availableMedications örneği:\n```\n\"availableMedications\": [\n  {\n    \"name\": \"Parol\",\n    \"description\": \"Ateş düşürücü ve ağrı kesici\",\n    \"price\": 25.90,\n    \"quantity\": 50,\n    \"expiryDate\": \"2024-12-31T00:00:00.000Z\",\n    \"imageURL\": null,\n    \"status\": \"forSale\"\n  },\n  {\n    \"name\": \"Majezik\",\n    \"description\": \"Ağrı kesici ve antienflamatuar\",\n    \"price\": 32.50,\n    \"quantity\": 40,\n    \"expiryDate\": \"2025-02-28T00:00:00.000Z\",\n    \"imageURL\": null,\n    \"status\": \"forSale\"\n  }\n]\n```"
 					},
 					"response": []
 				},
@@ -620,11 +655,11 @@
 							],
 							"query": [
 								{
-									"key": "lat",
+									"key": "latitude",
 									"value": "41.0082"
 								},
 								{
-									"key": "lng",
+									"key": "longitude",
 									"value": "28.9784"
 								},
 								{
@@ -633,7 +668,7 @@
 								}
 							]
 						},
-						"description": "Konuma göre en yakın eczaneleri bulur"
+						"description": "Konuma göre en yakın eczaneleri bulur. Veritabanında kayıtlı olan eczaneler için, eczanenin envanter bilgisi de availableMedications alanında döndürülür. Bu alan, her eczanenin envanterinde bulunan ilaçların listesini içerir.\n\nDönen availableMedications alanı her ilaç için şu bilgileri içerir:\n- name: İlaç adı\n- description: İlaç açıklaması\n- price: İlaç fiyatı\n- quantity: Stok miktarı\n- expiryDate: Son kullanma tarihi\n- imageURL: İlaç resmi (varsa)\n- status: İlacın durumu ('forSale' veya 'available')"
 					},
 					"response": []
 				},
@@ -664,7 +699,13 @@
 						"header": [
 							{
 								"key": "pharmacistid",
-								"value": "12345678910"
+								"value": "12345678910",
+								"description": "Kullanıcı kimlik bilgisi"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"description": "JWT token for authentication"
 							}
 						],
 						"url": {
@@ -678,7 +719,7 @@
 								"all"
 							]
 						},
-						"description": "Sistemdeki tüm eczaneleri getirir. Harita görünümünde konumlarını işaretlemek için kullanılır. Aktif veya nöbetçi filtresi olmadan tüm eczaneleri döndürür."
+						"description": "Sistemdeki tüm eczaneleri getirir. Harita görünümünde konumlarını işaretlemek için kullanılır. Aktif veya nöbetçi filtresi olmadan tüm eczaneleri döndürür. Eczaneler, availableMedications alanında envanter bilgileriyle birlikte gelir. Bu alan, eczanenin stoğunda bulunan ilaçların listesini içerir.\n\nÖrnek yanıt formatı:\n```\n[\n  {\n    \"_id\": \"60c72b2f9b1d8b2a58c15d88\",\n    \"name\": \"Ali Eczanesi\",\n    \"address\": { ... },\n    \"location\": { ... },\n    \"phone\": \"0212 123 4567\",\n    \"email\": \"ali.eczane@gmail.com\",\n    \"owner\": { ... },\n    \"availableMedications\": [\n      {\n        \"name\": \"Parol\",\n        \"description\": \"Ateş düşürücü ve ağrı kesici\",\n        \"price\": 25.90,\n        \"quantity\": 50,\n        \"expiryDate\": \"2024-12-31T00:00:00.000Z\",\n        \"imageURL\": null,\n        \"status\": \"forSale\"\n      },\n      // Diğer ilaçlar...\n    ]\n  },\n  // Diğer eczaneler...\n]\n```"
 					},
 					"response": []
 				},
@@ -773,17 +814,45 @@
 						"header": [
 							{
 								"key": "pharmacistid",
-								"value": "12345678910"
+								"value": "12345678910",
+								"description": "Kullanıcı kimlik bilgisi"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"description": "JWT token for authentication"
 							}
 						],
 						"url": {
-							"raw": "{{baseUrl}}/api/transactions",
+							"raw": "{{baseUrl}}/api/transactions?page=1&limit=20&sort=createdAt&order=desc",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
 								"transactions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Sayfa numarası"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Sayfa başına işlem sayısı"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt",
+									"description": "Sıralama alanı"
+								},
+								{
+									"key": "order",
+									"value": "desc",
+									"description": "Sıralama yönü (asc/desc)"
+								}
 							]
 						},
 						"description": "Kullanıcının tüm işlemlerini getirir"
@@ -952,7 +1021,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/fda/drugs?query=aspirin",
+							"raw": "{{baseUrl}}/api/fda/drugs?q=aspirin",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -963,7 +1032,7 @@
 							],
 							"query": [
 								{
-									"key": "query",
+									"key": "q",
 									"value": "aspirin"
 								}
 							]
@@ -1025,7 +1094,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/fda/drug-recalls?query=aspirin",
+							"raw": "{{baseUrl}}/api/fda/drug-recalls?q=aspirin",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -1036,7 +1105,7 @@
 							],
 							"query": [
 								{
-									"key": "query",
+									"key": "q",
 									"value": "aspirin"
 								}
 							]
@@ -1086,8 +1155,8 @@
 								"value": "application/json"
 							},
 							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"key": "pharmacistid",
+								"value": "12345678910"
 							}
 						],
 						"body": {
@@ -1116,8 +1185,8 @@
 						"method": "DELETE",
 						"header": [
 							{
-								"key": "Authorization",
-								"value": "Bearer {{token}}"
+								"key": "pharmacistid",
+								"value": "12345678910"
 							}
 						],
 						"url": {
@@ -1138,6 +1207,172 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Bildirimler",
+			"description": "Kullanıcı bildirimlerini yönetme işlemleri",
+			"item": [
+				{
+					"name": "Tüm Bildirimleri Getir",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910",
+								"description": "Kullanıcı kimlik bilgisi"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"description": "JWT token for authentication"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications?page=1&limit=20&isRead=false&type=all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Sayfa numarası"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Sayfa başına bildirim sayısı"
+								},
+								{
+									"key": "isRead",
+									"value": "false",
+									"description": "Okunma durumu (true, false veya tümü için all)"
+								},
+								{
+									"key": "type",
+									"value": "all",
+									"description": "Bildirim türü (offer, purchase, expiry, system, all)"
+								}
+							]
+						},
+						"description": "Kullanıcının tüm bildirimlerini getirir. Filtreleme ve sayfalama seçenekleri mevcuttur."
+					},
+					"response": []
+				},
+				{
+					"name": "Bildirimi Okundu İşaretle",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/60c72b2f9b1d8b2a58c15d95/read",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"60c72b2f9b1d8b2a58c15d95",
+								"read"
+							]
+						},
+						"description": "Belirli bir bildirimi okundu olarak işaretler"
+					},
+					"response": []
+				},
+				{
+					"name": "Tüm Bildirimleri Okundu İşaretle",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/read-all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"read-all"
+							]
+						},
+						"description": "Kullanıcının tüm bildirimlerini okundu olarak işaretler"
+					},
+					"response": []
+				},
+				{
+					"name": "Bildirimi Sil",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications/60c72b2f9b1d8b2a58c15d95",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications",
+								"60c72b2f9b1d8b2a58c15d95"
+							]
+						},
+						"description": "Belirli bir bildirimi siler"
+					},
+					"response": []
+				},
+				{
+					"name": "Çoklu Bildirim Sil",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"notificationIds\": [\n    \"60c72b2f9b1d8b2a58c15d95\",\n    \"60c72b2f9b1d8b2a58c15d96\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/notifications",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"notifications"
+							]
+						},
+						"description": "Birden fazla bildirimi siler"
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -1146,7 +1381,28 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					""
+					"// Eğer login isteği ise, yanıttan gelen token'ı kaydet",
+					"pm.test(\"Auto-save auth token from login response\", function () {",
+					"    if (pm.request.url.toString().includes('/api/auth/login')) {",
+					"        pm.sendRequest({",
+					"            url: pm.variables.get(\"baseUrl\") + '/api/auth/login',",
+					"            method: 'POST',",
+					"            header: { 'Content-Type': 'application/json' },",
+					"            body: {",
+					"                mode: 'raw',",
+					"                raw: JSON.stringify({",
+					"                    pharmacistId: pm.variables.get(\"pharmacistId\"),",
+					"                    password: \"123456\"",
+					"                })",
+					"            }",
+					"        }, function (err, res) {",
+					"            if (!err && res.json().token) {",
+					"                pm.variables.set(\"authToken\", res.json().token);",
+					"                console.log(\"Token kaydedildi: \" + res.json().token);",
+					"            }",
+					"        });",
+					"    }",
+					"});"
 				]
 			}
 		},
@@ -1155,7 +1411,25 @@
 			"script": {
 				"type": "text/javascript",
 				"exec": [
-					""
+					"// Otomatik başarı kontrolü",
+					"pm.test(\"Başarılı yanıt kodu alındı\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"// Giriş yanıtı kontrolü",
+					"if (pm.request.url.toString().includes('/api/auth/login')) {",
+					"    pm.test(\"Giriş başarılı ve token alındı\", function () {",
+					"        var jsonData = pm.response.json();",
+					"        pm.expect(jsonData.token).to.exist;",
+					"        pm.expect(jsonData.user).to.exist;",
+					"        ",
+					"        // Token'ı koleksiyon değişkenine kaydet",
+					"        if (jsonData.token) {",
+					"            pm.collectionVariables.set(\"authToken\", jsonData.token);",
+					"            console.log(\"Token kaydedildi: \" + jsonData.token);",
+					"        }",
+					"    });",
+					"}"
 				]
 			}
 		}
@@ -1164,7 +1438,20 @@
 		{
 			"key": "baseUrl",
 			"value": "https://phamorabackend-production.up.railway.app",
-			"type": "string"
+			"type": "string",
+			"description": "API temel URL'i"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string",
+			"description": "Oturum kimlik doğrulama tokeni"
+		},
+		{
+			"key": "pharmacistId",
+			"value": "12345678910",
+			"type": "string",
+			"description": "Eczacı kimlik numarası"
 		}
 	]
 } 

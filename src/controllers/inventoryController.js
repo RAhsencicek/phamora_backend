@@ -325,4 +325,147 @@ exports.reserveStock = async (req, res) => {
       message: 'Stok rezerve edilirken hata oluştu'
     });
   }
+};
+
+// Son kullanma tarihi yaklaşan ürünler için bildirim gönder
+exports.sendExpiryNotifications = async () => {
+  try {
+    const notificationController = require('./notificationController');
+    const Inventory = require('../models/Inventory');
+    const User = require('../models/User');
+    const Pharmacy = require('../models/Pharmacy');
+
+    // Bugünden 30 gün sonrası için tarih hesapla
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+    
+    // Son kullanma tarihi 30 gün içinde olan ürünleri bul
+    const expiringInventories = await Inventory.find({
+      expiryDate: { 
+        $lte: thirtyDaysFromNow, 
+        $gte: new Date() // Bugünden büyük olanlar
+      },
+      // Daha önce bildirim gönderilmemiş olanlar
+      notificationSent: { $ne: true }
+    })
+    .populate('medicine', 'name barcode dosageForm')
+    .populate('pharmacy', 'name owner');
+    
+    console.log(`Son kullanma tarihi yaklaşan ${expiringInventories.length} ürün bulundu.`);
+    
+    // Her bir envanter kaydı için bildirim gönder
+    for (const inventory of expiringInventories) {
+      if (!inventory.pharmacy || !inventory.pharmacy.owner || !inventory.medicine) {
+        console.log('Eksik veri - atlanıyor:', inventory._id);
+        continue;
+      }
+      
+      // Eczane sahibini bul
+      const pharmacyOwner = await User.findById(inventory.pharmacy.owner);
+      
+      if (!pharmacyOwner) {
+        console.log(`Eczane sahibi bulunamadı: ${inventory.pharmacy.owner}`);
+        continue;
+      }
+      
+      // Son kullanma tarihine kaç gün kaldığını hesapla
+      const daysUntilExpiry = Math.ceil((inventory.expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+      
+      // Bildirim oluştur
+      await notificationController.createNotification(pharmacyOwner._id, {
+        title: 'Son Kullanma Tarihi Yaklaşıyor',
+        message: `${inventory.medicine.name} ilacının son kullanma tarihi ${daysUntilExpiry} gün içinde dolacak.`,
+        type: 'expiry',
+        data: {
+          medicineId: inventory.medicine._id,
+          inventoryId: inventory._id,
+          expiryDate: inventory.expiryDate,
+          quantity: inventory.quantity
+        }
+      });
+      
+      // Bildirim gönderildi olarak işaretle
+      inventory.notificationSent = true;
+      await inventory.save();
+      
+      console.log(`${pharmacyOwner.name} ${pharmacyOwner.surname} kullanıcısına son kullanma tarihi bildirimi gönderildi.`);
+    }
+    
+    return {
+      success: true,
+      count: expiringInventories.length
+    };
+  } catch (error) {
+    console.error('Son kullanma tarihi bildirimleri gönderilirken hata oluştu:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+};
+
+// Düşük stok uyarıları için bildirim gönder
+exports.sendLowStockNotifications = async () => {
+  try {
+    const notificationController = require('./notificationController');
+    const Inventory = require('../models/Inventory');
+    const User = require('../models/User');
+
+    // Stok seviyesi minimum limitin altında olan ürünleri bul
+    const lowStockInventories = await Inventory.find({
+      $expr: { $lt: ["$quantity", "$minStockLevel"] },
+      // Daha önce bildirim gönderilmemiş olanlar
+      lowStockNotificationSent: { $ne: true }
+    })
+    .populate('medicine', 'name barcode dosageForm')
+    .populate('pharmacy', 'name owner');
+    
+    console.log(`Düşük stok seviyesinde ${lowStockInventories.length} ürün bulundu.`);
+    
+    // Her bir envanter kaydı için bildirim gönder
+    for (const inventory of lowStockInventories) {
+      if (!inventory.pharmacy || !inventory.pharmacy.owner || !inventory.medicine) {
+        console.log('Eksik veri - atlanıyor:', inventory._id);
+        continue;
+      }
+      
+      // Eczane sahibini bul
+      const pharmacyOwner = await User.findById(inventory.pharmacy.owner);
+      
+      if (!pharmacyOwner) {
+        console.log(`Eczane sahibi bulunamadı: ${inventory.pharmacy.owner}`);
+        continue;
+      }
+      
+      // Bildirim oluştur
+      await notificationController.createNotification(pharmacyOwner._id, {
+        title: 'Düşük Stok Uyarısı',
+        message: `${inventory.medicine.name} ilacı için stok seviyesi kritik düzeye ulaştı (${inventory.quantity}/${inventory.minStockLevel}).`,
+        type: 'system',
+        data: {
+          medicineId: inventory.medicine._id,
+          inventoryId: inventory._id,
+          quantity: inventory.quantity,
+          minStockLevel: inventory.minStockLevel
+        }
+      });
+      
+      // Bildirim gönderildi olarak işaretle
+      inventory.lowStockNotificationSent = true;
+      await inventory.save();
+      
+      console.log(`${pharmacyOwner.name} ${pharmacyOwner.surname} kullanıcısına düşük stok bildirimi gönderildi.`);
+    }
+    
+    return {
+      success: true,
+      count: lowStockInventories.length
+    };
+  } catch (error) {
+    console.error('Düşük stok bildirimleri gönderilirken hata oluştu:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
 }; 

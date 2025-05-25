@@ -40,7 +40,7 @@ const inventorySchema = new mongoose.Schema({
   },
   minStockLevel: {
     type: Number,
-    default: 5
+    default: 10
   },
   maxStockLevel: {
     type: Number,
@@ -59,22 +59,33 @@ const inventorySchema = new mongoose.Schema({
     name: String,
     contact: String
   },
-  lastRestockDate: Date,
+  lastRestockDate: {
+    type: Date,
+    default: Date.now
+  },
   status: {
     type: String,
-    enum: ['in_stock', 'low_stock', 'out_of_stock', 'expired', 'recalled'],
+    enum: ['in_stock', 'reserved', 'expired', 'out_of_stock'],
     default: 'in_stock'
   },
   notes: String,
   reservedQuantity: {
     type: Number,
     default: 0
-  }, // Rezerve edilen miktar (siparişlerde)
+  },
   availableQuantity: {
     type: Number,
     default: function() {
       return this.quantity - this.reservedQuantity;
     }
+  },
+  notificationSent: {
+    type: Boolean,
+    default: false
+  },
+  lowStockNotificationSent: {
+    type: Boolean,
+    default: false
   },
   createdAt: {
     type: Date,
@@ -93,6 +104,7 @@ inventorySchema.index({ medicine: 1 });
 inventorySchema.index({ expiryDate: 1 });
 inventorySchema.index({ status: 1 });
 inventorySchema.index({ isAvailableForTrade: 1 });
+inventorySchema.index({ quantity: 1 });
 
 // Virtual field for availability status
 inventorySchema.virtual('isLowStock').get(function() {
