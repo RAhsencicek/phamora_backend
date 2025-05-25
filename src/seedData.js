@@ -1,3 +1,4 @@
+/*
 const mongoose = require('mongoose');
 const Medicine = require('./models/Medicine');
 const Pharmacy = require('./models/Pharmacy');
@@ -186,3 +187,4 @@ async function seedDatabase() {
 }
 
 module.exports = { seedDatabase }; 
+*/

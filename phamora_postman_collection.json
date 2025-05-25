@@ -658,10 +658,15 @@
 					"response": []
 				},
 				{
-					"name": "Tüm Nöbetçi Eczaneleri Getir",
+					"name": "Tüm Eczaneleri Getir",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
 						"url": {
 							"raw": "{{baseUrl}}/api/pharmacies/all",
 							"host": [
@@ -673,7 +678,7 @@
 								"all"
 							]
 						},
-						"description": "Tüm nöbetçi eczaneleri listeler"
+						"description": "Sistemdeki tüm eczaneleri getirir. Harita görünümünde konumlarını işaretlemek için kullanılır. Aktif veya nöbetçi filtresi olmadan tüm eczaneleri döndürür."
 					},
 					"response": []
 				},
@@ -1046,6 +1051,31 @@
 			"name": "Kullanıcı Yönetimi (Admin)",
 			"description": "Kullanıcı ve eczane ilişkisi yönetim işlemleri",
 			"item": [
+				{
+					"name": "Tüm Kullanıcıları Getir",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "pharmacistid",
+								"value": "12345678910"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						},
+						"description": "Sistemdeki tüm kullanıcıları getirir. Sadece yönetim panelindeki harita görünümü için kullanılır."
+					},
+					"response": []
+				},
 				{
 					"name": "Kullanıcı-Eczane Bağlantısı Oluştur",
 					"request": {

@@ -1,0 +1,644 @@
+{
+  "pharmacists": [
+    {
+      "pharmacistId": "ELZ001",
+      "name": "Ahmet",
+      "surname": "Yılmaz",
+      "email": "ahmet.yilmaz@example.com",
+      "phone": "05321234567",
+      "password": "password123",
+      "address": {
+        "street": "Doğukent Mah. Ahmet Yesevi Cad. No:55/C",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.272232, 38.687168]
+      },
+      "pharmacyDetails": {
+        "name": "HÜRRİYET ECZANESİ",
+        "licenseNumber": "ELZ-2025-001",
+        "address": {
+          "street": "Doğukent Mah. Ahmet Yesevi Cad. No:55/C",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4567",
+        "email": "ahmet.yilmaz@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Elazığ'ın Merkezinde Hizmetinizde"
+      }
+    },
+    {
+      "pharmacistId": "ELZ002",
+      "name": "Ayşe",
+      "surname": "Kaya",
+      "email": "ayse.kaya@example.com",
+      "phone": "05321234568",
+      "password": "password123",
+      "address": {
+        "street": "Abdullahpaşa Mah. 12. Sokak 3 No'lu Çarşı No:61",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.144124, 38.657262]
+      },
+      "pharmacyDetails": {
+        "name": "TUGRUL ECZANESİ",
+        "licenseNumber": "ELZ-2025-002",
+        "address": {
+          "street": "Abdullahpaşa Mah. 12. Sokak 3 No'lu Çarşı No:61",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4568",
+        "email": "ayse.kaya@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Abdullahpaşa'da Güvenilir Hizmet"
+      }
+    },
+    {
+      "pharmacistId": "ELZ003",
+      "name": "Mehmet",
+      "surname": "Demir",
+      "email": "mehmet.demir@example.com",
+      "phone": "05321234569",
+      "password": "password123",
+      "address": {
+        "street": "Rızaiye Mah. Balakgazi Cad. No:5/A",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.224862, 38.675029]
+      },
+      "pharmacyDetails": {
+        "name": "YAŞAM ECZANESİ",
+        "licenseNumber": "ELZ-2025-003",
+        "address": {
+          "street": "Rızaiye Mah. Balakgazi Cad. No:5/A",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4569",
+        "email": "mehmet.demir@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Rızaiye'de Sağlıklı Yaşam Desteği"
+      }
+    },
+    {
+      "pharmacistId": "ELZ004",
+      "name": "Elif",
+      "surname": "Şahin",
+      "email": "elif.sahin@example.com",
+      "phone": "05321234570",
+      "password": "password123",
+      "address": {
+        "street": "Mustafa Paşa Kazım Karabekir Cad. No:47",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.207264, 38.679932]
+      },
+      "pharmacyDetails": {
+        "name": "ÇAKILCIOĞLU ECZANESİ",
+        "licenseNumber": "ELZ-2025-004",
+        "address": {
+          "street": "Mustafa Paşa Kazım Karabekir Cad. No:47",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4570",
+        "email": "elif.sahin@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Mustafa Paşa'da Güvenilir Eczane"
+      }
+    },
+    {
+      "pharmacistId": "ELZ005",
+      "name": "Ali",
+      "surname": "Çelik",
+      "email": "ali.celik@example.com",
+      "phone": "05321234571",
+      "password": "password123",
+      "address": {
+        "street": "Güneykent Mah. 19546. Bulvar No:12/1B",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.132707, 38.630441]
+      },
+      "pharmacyDetails": {
+        "name": "YÜZGEÇ ECZANESİ",
+        "licenseNumber": "ELZ-2025-005",
+        "address": {
+          "street": "Güneykent Mah. 19546. Bulvar No:12/1B",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4571",
+        "email": "ali.celik@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Güneykent'te Sağlık Hizmeti"
+      }
+    },
+    {
+      "pharmacistId": "ELZ006",
+      "name": "Zeynep",
+      "surname": "Yılmaz",
+      "email": "zeynep.yilmaz@example.com",
+      "phone": "05321234572",
+      "password": "password123",
+      "address": {
+        "street": "Üniversite Mah. Yahya Kemal Cad. No:16/A",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.207900, 38.677000]
+      },
+      "pharmacyDetails": {
+        "name": "BERAY ECZANESİ",
+        "licenseNumber": "ELZ-2025-006",
+        "address": {
+          "street": "Üniversite Mah. Yahya Kemal Cad. No:16/A",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4572",
+        "email": "zeynep.yilmaz@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Üniversite Mahallesinde Hizmetinizde"
+      }
+    },
+    {
+      "pharmacistId": "ELZ007",
+      "name": "Mustafa",
+      "surname": "Öztürk",
+      "email": "mustafa.ozturk@example.com",
+      "phone": "05321234573",
+      "password": "password123",
+      "address": {
+        "street": "İzzetpaşa Mah. Şehit İlhanlar Cad No:16/C",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.221598, 38.676748]
+      },
+      "pharmacyDetails": {
+        "name": "BIHTER ECZANESİ",
+        "licenseNumber": "ELZ-2025-007",
+        "address": {
+          "street": "İzzetpaşa Mah. Şehit İlhanlar Cad No:16/C",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4573",
+        "email": "mustafa.ozturk@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "İzzetpaşa'da Güvenilir Sağlık Desteği"
+      }
+    },
+    {
+      "pharmacistId": "ELZ008",
+      "name": "Fatma",
+      "surname": "Aksoy",
+      "email": "fatma.aksoy@example.com",
+      "phone": "05321234574",
+      "password": "password123",
+      "address": {
+        "street": "Sürsürü Mah. Çesme Sok. No:109",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.183944, 38.667638]
+      },
+      "pharmacyDetails": {
+        "name": "BINNUR ECZANESİ",
+        "licenseNumber": "ELZ-2025-008",
+        "address": {
+          "street": "Sürsürü Mah. Çesme Sok. No:109",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4574",
+        "email": "fatma.aksoy@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Sürsürü'de Kaliteli Hizmet"
+      }
+    },
+    {
+      "pharmacistId": "ELZ009",
+      "name": "İbrahim",
+      "surname": "Kaya",
+      "email": "ibrahim.kaya@example.com",
+      "phone": "05321234575",
+      "password": "password123",
+      "address": {
+        "street": "Rızaiye Mahallesi Borat Sokak No:37/A",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.225836, 38.681153]
+      },
+      "pharmacyDetails": {
+        "name": "OKUBAY ECZANESİ",
+        "licenseNumber": "ELZ-2025-009",
+        "address": {
+          "street": "Rızaiye Mahallesi Borat Sokak No:37/A",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4575",
+        "email": "ibrahim.kaya@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Rızaiye'de Güvenilir Eczane"
+      }
+    },
+    {
+      "pharmacistId": "ELZ010",
+      "name": "Ayşe",
+      "surname": "Yılmaz",
+      "email": "ayse.yilmaz2@example.com",
+      "phone": "05321234576",
+      "password": "password123",
+      "address": {
+        "street": "Doğukent Mah. 86.Sok. No:12/1BA",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.264521, 38.682266]
+      },
+      "pharmacyDetails": {
+        "name": "EYLÜL ECZANESİ",
+        "licenseNumber": "ELZ-2025-010",
+        "address": {
+          "street": "Doğukent Mah. 86.Sok. No:12/1BA",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4576",
+        "email": "ayse.yilmaz2@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Doğukent'te Sağlık Desteği"
+      }
+    },
+    {
+      "pharmacistId": "ELZ011",
+      "name": "Hasan",
+      "surname": "Demir",
+      "email": "hasan.demir@example.com",
+      "phone": "05321234577",
+      "password": "password123",
+      "address": {
+        "street": "Ataşehir Mah. Malatya Cad. No:105",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.156680, 38.656367]
+      },
+      "pharmacyDetails": {
+        "name": "ÖZEN ECZANESİ",
+        "licenseNumber": "ELZ-2025-011",
+        "address": {
+          "street": "Ataşehir Mah. Malatya Cad. No:105",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4577",
+        "email": "hasan.demir@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Ataşehir'de Kaliteli Hizmet"
+      }
+    },
+    {
+      "pharmacistId": "ELZ012",
+      "name": "Elif",
+      "surname": "Çelik",
+      "email": "elif.celik@example.com",
+      "phone": "05321234578",
+      "password": "password123",
+      "address": {
+        "street": "İzzetpaşa Mah. Şehit İlhanlar Cad. No:47/A",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.220609, 38.679467]
+      },
+      "pharmacyDetails": {
+        "name": "LİMON ECZANESİ",
+        "licenseNumber": "ELZ-2025-012",
+        "address": {
+          "street": "İzzetpaşa Mah. Şehit İlhanlar Cad. No:47/A",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4578",
+        "email": "elif.celik@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "İzzetpaşa'da Hızlı ve Güvenilir"
+      }
+    },
+    {
+      "pharmacistId": "ELZ013",
+      "name": "Ali",
+      "surname": "Yılmaz",
+      "email": "ali.yilmaz2@example.com",
+      "phone": "05321234579",
+      "password": "password123",
+      "address": {
+        "street": "Rızaiye Mah. Tatlı Sok. No:6/B",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.224365, 38.676091]
+      },
+      "pharmacyDetails": {
+        "name": "AKGÜL ECZANESİ",
+        "licenseNumber": "ELZ-2025-013",
+        "address": {
+          "street": "Rızaiye Mah. Tatlı Sok. No:6/B",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4579",
+        "email": "ali.yilmaz2@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Rızaiye'de Sağlıklı Çözümler"
+      }
+    },
+    {
+      "pharmacistId": "ELZ014",
+      "name": "Zeynep",
+      "surname": "Şahin",
+      "email": "zeynep.sahin@example.com",
+      "phone": "05321234580",
+      "password": "password123",
+      "address": {
+        "street": "Rızaiye Mah. Tatlı Sok. No:4/B",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.224365, 38.676091]
+      },
+      "pharmacyDetails": {
+        "name": "UFUK ECZANESİ",
+        "licenseNumber": "ELZ-2025-014",
+        "address": {
+          "street": "Rızaiye Mah. Tatlı Sok. No:4/B",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4580",
+        "email": "zeynep.sahin@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Rızaiye'de Güvenilir Hizmet"
+      }
+    },
+    {
+      "pharmacistId": "ELZ015",
+      "name": "Mustafa",
+      "surname": "Kaya",
+      "email": "mustafa.kaya@example.com",
+      "phone": "05321234581",
+      "password": "password123",
+      "address": {
+        "street": "Doğukent Mah. 17000. sokak No:42/A",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.271429, 38.687489]
+      },
+      "pharmacyDetails": {
+        "name": "KARDELEN ECZANESİ",
+        "licenseNumber": "ELZ-2025-015",
+        "address": {
+          "street": "Doğukent Mah. 17000. sokak No:42/A",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4581",
+        "email": "mustafa.kaya@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Doğukent'te Sağlıklı Hizmet"
+      }
+    },
+    {
+      "pharmacistId": "ELZ016",
+      "name": "Fatma",
+      "surname": "Öztürk",
+      "email": "fatma.ozturk@example.com",
+      "phone": "05321234582",
+      "password": "password123",
+      "address": {
+        "street": "Abdullahpaşa Mah. 273. Sokak No:2",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.144071, 38.657425]
+      },
+      "pharmacyDetails": {
+        "name": "İREM ECZANESİ",
+        "licenseNumber": "ELZ-2025-016",
+        "address": {
+          "street": "Abdullahpaşa Mah. 273. Sokak No:2",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4582",
+        "email": "fatma.ozturk@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Abdullahpaşa'da Kaliteli Eczane"
+      }
+    },
+    {
+      "pharmacistId": "ELZ017",
+      "name": "İbrahim",
+      "surname": "Aksoy",
+      "email": "ibrahim.aksoy@example.com",
+      "phone": "05321234583",
+      "password": "password123",
+      "address": {
+        "street": "Cumhuriyet Mah. 170. Sok. No:38/AA",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.154304, 38.667839]
+      },
+      "pharmacyDetails": {
+        "name": "LEYLA ECZANESİ",
+        "licenseNumber": "ELZ-2025-017",
+        "address": {
+          "street": "Cumhuriyet Mah. 170. Sok. No:38/AA",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4583",
+        "email": "ibrahim.aksoy@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Cumhuriyet Mahallesinde Hizmetinizde"
+      }
+    },
+    {
+      "pharmacistId": "ELZ018",
+      "name": "Ayşe",
+      "surname": "Demir",
+      "email": "ayse.demir@example.com",
+      "phone": "05321234584",
+      "password": "password123",
+      "address": {
+        "street": "Kültür Mah. Şehit Idris Doğan Cad. No:4",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.214300, 38.674500]
+      },
+      "pharmacyDetails": {
+        "name": "KENT ECZANESİ",
+        "licenseNumber": "ELZ-2025-018",
+        "address": {
+          "street": "Kültür Mah. Şehit Idris Doğan Cad. No:4",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4584",
+        "email": "ayse.demir@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Kültür Mahallesinde Güvenilir Hizmet"
+      }
+    },
+    {
+      "pharmacistId": "ELZ019",
+      "name": "Hasan",
+      "surname": "Çelik",
+      "email": "hasan.celik@example.com",
+      "phone": "05321234585",
+      "password": "password123",
+      "address": {
+        "street": "Kültür Mah. Fidan Sok. No:11-D",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.208307, 38.672127]
+      },
+      "pharmacyDetails": {
+        "name": "KADİR ECZANESİ",
+        "licenseNumber": "ELZ-2025-019",
+        "address": {
+          "street": "Kültür Mah. Fidan Sok. No:11-D",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4585",
+        "email": "hasan.celik@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Kültür Mahallesinde Sağlık Desteği"
+      }
+    },
+    {
+      "pharmacistId": "ELZ020",
+      "name": "Elif",
+      "surname": "Yılmaz",
+      "email": "elif.yilmaz@example.com",
+      "phone": "05321234586",
+      "password": "password123",
+      "address": {
+        "street": "Ataşehir Mah. Yiğitcan Sok. No:2/A",
+        "city": "Elazığ",
+        "district": "Merkez",
+        "postalCode": "23000"
+      },
+      "location": {
+        "type": "Point",
+        "coordinates": [39.170980, 38.662230]
+      },
+      "pharmacyDetails": {
+        "name": "HARPUT ECZANESİ",
+        "licenseNumber": "ELZ-2025-020",
+        "address": {
+          "street": "Ataşehir Mah. Yiğitcan Sok. No:2/A",
+          "city": "Elazığ",
+          "district": "Merkez",
+          "postalCode": "23000"
+        },
+        "phone": "0424 123 4586",
+        "email": "elif.yilmaz@example.com",
+        "services": ["Nöbetçi", "Evde Teslimat", "Danışmanlık"],
+        "description": "Ataşehir'de Güvenilir Eczane"
+      }
+    }
+  ]
+}
