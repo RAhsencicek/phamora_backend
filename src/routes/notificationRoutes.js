@@ -5,6 +5,9 @@ const notificationController = require('../controllers/notificationController');
 // Kullanıcının bildirimlerini getir
 router.get('/', notificationController.getUserNotifications);
 
+// Bildirim istatistiklerini getir
+router.get('/stats', notificationController.getNotificationStats);
+
 // Tek bir bildirimi okundu olarak işaretle
 router.patch('/:notificationId/read', notificationController.markAsRead);
 

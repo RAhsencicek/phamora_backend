@@ -481,4 +481,101 @@ exports.createTransactionNotification = async (req, transaction, status) => {
     console.error('İşlem bildirimi oluşturma hatası:', error);
     return null;
   }
+};
+
+// Bildirim istatistiklerini getir
+exports.getNotificationStats = async (req, res) => {
+  try {
+    // Kullanıcı ID'sini al
+    const pharmacistId = req.headers.pharmacistid;
+    
+    if (!pharmacistId) {
+      return res.status(400).json({
+        success: false,
+        message: 'PharmacistId header parametresi eksik'
+      });
+    }
+    
+    // User'ı direkt olarak pharmacistId ile bul
+    const user = await User.findOne({ pharmacistId });
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: `${pharmacistId} ID'li kullanıcı bulunamadı`
+      });
+    }
+    
+    // Toplam bildirim sayısı
+    const total = await Notification.countDocuments({ recipient: user._id });
+    
+    // Okunmamış bildirim sayısı
+    const unread = await Notification.countDocuments({ 
+      recipient: user._id, 
+      isRead: false 
+    });
+    
+    // Okunmuş bildirim sayısı
+    const read = total - unread;
+    
+    // Türe göre bildirim sayıları
+    const byType = await Notification.aggregate([
+      { $match: { recipient: user._id } },
+      { $group: { _id: '$type', count: { $sum: 1 } } }
+    ]);
+    
+    const typeStats = {};
+    byType.forEach(item => {
+      typeStats[item._id] = item.count;
+    });
+    
+    // Zaman bazlı istatistikler
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const thisWeekStart = new Date(today.getTime() - (today.getDay() * 24 * 60 * 60 * 1000));
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    const todayCount = await Notification.countDocuments({
+      recipient: user._id,
+      createdAt: { $gte: today }
+    });
+    
+    const thisWeekCount = await Notification.countDocuments({
+      recipient: user._id,
+      createdAt: { $gte: thisWeekStart }
+    });
+    
+    const thisMonthCount = await Notification.countDocuments({
+      recipient: user._id,
+      createdAt: { $gte: thisMonthStart }
+    });
+    
+    res.json({
+      success: true,
+      data: {
+        total,
+        unread,
+        read,
+        byType: {
+          offer: typeStats.offer || 0,
+          transaction: typeStats.transaction || 0,
+          purchase: typeStats.purchase || 0,
+          expiry: typeStats.expiry || 0,
+          system: typeStats.system || 0
+        },
+        recent: {
+          today: todayCount,
+          thisWeek: thisWeekCount,
+          thisMonth: thisMonthCount
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Bildirim istatistikleri alma hatası:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Bildirim istatistikleri alınırken hata oluştu',
+      error: error.message
+    });
+  }
 }; 
