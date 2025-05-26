@@ -329,10 +329,18 @@ exports.createTransactionNotification = async (req, transaction, status) => {
   try {
     // Kullanıcı bilgisini al
     const pharmacistId = req.headers.pharmacistid;
-    if (!pharmacistId) return null;
+    if (!pharmacistId) {
+      console.log('❌ createTransactionNotification: pharmacistId header eksik');
+      return null;
+    }
     
     const currentUser = await User.findOne({ pharmacistId });
-    if (!currentUser) return null;
+    if (!currentUser) {
+      console.log(`❌ createTransactionNotification: ${pharmacistId} kullanıcısı bulunamadı`);
+      return null;
+    }
+    
+    console.log(`🔍 createTransactionNotification: Kullanıcı: ${currentUser.name} ${currentUser.surname} (${pharmacistId}), Durum: ${status}`);
     
     // İşlemi ve kullanıcı bilgilerini doldur
     await transaction.populate([
@@ -345,6 +353,13 @@ exports.createTransactionNotification = async (req, transaction, status) => {
     const sellerUser = transaction.seller.owner ? await User.findById(transaction.seller.owner) : null;
     const buyerUser = transaction.buyer.owner ? await User.findById(transaction.buyer.owner) : null;
     
+    console.log(`🏪 İşlem Bilgileri:`);
+    console.log(`   Satıcı Eczane: ${transaction.seller.name} (ID: ${transaction.seller._id})`);
+    console.log(`   Satıcı Kullanıcı: ${sellerUser ? `${sellerUser.name} ${sellerUser.surname} (${sellerUser._id})` : 'Bulunamadı'}`);
+    console.log(`   Alıcı Eczane: ${transaction.buyer.name} (ID: ${transaction.buyer._id})`);
+    console.log(`   Alıcı Kullanıcı: ${buyerUser ? `${buyerUser.name} ${buyerUser.surname} (${buyerUser._id})` : 'Bulunamadı'}`);
+    console.log(`   Mevcut Kullanıcı: ${currentUser.name} ${currentUser.surname} (${currentUser._id})`);
+    
     // İlaçları bir araya getir
     const medicineNames = transaction.items.map(item => item.medicine.name).join(', ');
     const totalItems = transaction.items.reduce((sum, item) => sum + item.quantity, 0);
@@ -354,28 +369,62 @@ exports.createTransactionNotification = async (req, transaction, status) => {
     
     switch(status) {
       case 'pending':
+        console.log(`📝 Pending durumu için bildirim kontrolü:`);
+        console.log(`   buyerUser var mı: ${buyerUser ? 'Evet' : 'Hayır'}`);
+        console.log(`   currentUser !== buyerUser: ${currentUser._id.toString() !== buyerUser?._id.toString()}`);
+        
         // Satıcı işlem oluşturduğunda alıcıya bildirim
         if (buyerUser && currentUser._id.toString() !== buyerUser._id.toString()) {
+          console.log(`✅ Alıcıya bildirim gönderiliyor: ${buyerUser.name} ${buyerUser.surname}`);
           const notification = await this.createNotification(buyerUser._id, {
             title: 'Yeni İşlem Teklifi',
             message: `${transaction.seller.name} eczanesinden "${medicineNames}" (${totalItems} adet) için yeni bir teklif aldınız. Onaylamak veya reddetmek için işlem detaylarını inceleyin.`,
             type: 'offer',
-            data: { transactionId: transaction._id }
+            data: { 
+              transactionId: transaction._id,
+              medicineNames: medicineNames,
+              totalItems: totalItems,
+              totalAmount: transaction.totalAmount,
+              sellerPharmacy: transaction.seller.name
+            }
           });
           notifications.push(notification);
+        } else {
+          console.log(`❌ Alıcıya bildirim gönderilmedi. Sebep:`);
+          if (!buyerUser) console.log(`   - buyerUser bulunamadı`);
+          if (buyerUser && currentUser._id.toString() === buyerUser._id.toString()) {
+            console.log(`   - currentUser ve buyerUser aynı kişi (kendine bildirim gönderilmez)`);
+          }
         }
         break;
         
       case 'confirmed':
+        console.log(`📝 Confirmed durumu için bildirim kontrolü:`);
+        console.log(`   sellerUser var mı: ${sellerUser ? 'Evet' : 'Hayır'}`);
+        console.log(`   currentUser !== sellerUser: ${currentUser._id.toString() !== sellerUser?._id.toString()}`);
+        
         // Alıcı onayladığında satıcıya bildirim
         if (sellerUser && currentUser._id.toString() !== sellerUser._id.toString()) {
+          console.log(`✅ Satıcıya bildirim gönderiliyor: ${sellerUser.name} ${sellerUser.surname}`);
           const notification = await this.createNotification(sellerUser._id, {
             title: 'İşlem Onaylandı',
             message: `${transaction.buyer.name} eczanesi "${medicineNames}" (${totalItems} adet) için teklifinizi onayladı. Sevkiyata hazırlayabilirsiniz.`,
             type: 'transaction',
-            data: { transactionId: transaction._id }
+            data: { 
+              transactionId: transaction._id,
+              medicineNames: medicineNames,
+              totalItems: totalItems,
+              totalAmount: transaction.totalAmount,
+              buyerPharmacy: transaction.buyer.name
+            }
           });
           notifications.push(notification);
+        } else {
+          console.log(`❌ Satıcıya bildirim gönderilmedi. Sebep:`);
+          if (!sellerUser) console.log(`   - sellerUser bulunamadı`);
+          if (sellerUser && currentUser._id.toString() === sellerUser._id.toString()) {
+            console.log(`   - currentUser ve sellerUser aynı kişi (kendine bildirim gönderilmez)`);
+          }
         }
         break;
         
@@ -475,7 +524,7 @@ exports.createTransactionNotification = async (req, transaction, status) => {
         break;
     }
     
-    console.log(`${notifications.length} bildirim gönderildi - Durum: ${status}`);
+    console.log(`📊 Bildirim Özeti: ${notifications.length} bildirim gönderildi - Durum: ${status}`);
     return notifications;
   } catch (error) {
     console.error('İşlem bildirimi oluşturma hatası:', error);

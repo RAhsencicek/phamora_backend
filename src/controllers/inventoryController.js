@@ -84,12 +84,25 @@ exports.addInventory = async (req, res) => {
 
     if (existingInventory) {
       // Mevcut stok varsa güncelle
+      const oldQuantity = existingInventory.quantity;
       existingInventory.quantity += inventoryData.quantity;
       existingInventory.unitPrice = inventoryData.unitPrice;
       existingInventory.costPrice = inventoryData.costPrice;
       existingInventory.batchNumber = inventoryData.batchNumber;
       existingInventory.expiryDate = inventoryData.expiryDate;
       existingInventory.lastRestockDate = new Date();
+      
+      // Düşük stok durumu kalktı mı kontrol et
+      const wasLowStock = oldQuantity <= existingInventory.minStockLevel;
+      const isNowNormalStock = existingInventory.quantity > existingInventory.minStockLevel;
+      
+      if (wasLowStock && isNowNormalStock) {
+        console.log(`📈 Stok seviyesi normale döndü: ${existingInventory.quantity}/${existingInventory.minStockLevel}`);
+        // Düşük stok bildirimlerini temizle
+        await this.clearLowStockNotifications(existingInventory);
+        // Flag'i sıfırla
+        existingInventory.lowStockNotificationSent = false;
+      }
       
       const updatedInventory = await existingInventory.save();
       await updatedInventory.populate('medicine pharmacy');
@@ -126,6 +139,18 @@ exports.updateInventory = async (req, res) => {
     const { inventoryId } = req.params;
     const updateData = req.body;
     
+    // Önce mevcut stok durumunu al
+    const currentInventory = await Inventory.findById(inventoryId);
+    if (!currentInventory) {
+      return res.status(404).json({
+        success: false,
+        message: 'Stok bulunamadı'
+      });
+    }
+    
+    const oldQuantity = currentInventory.quantity;
+    const oldMinStockLevel = currentInventory.minStockLevel;
+    
     const inventory = await Inventory.findByIdAndUpdate(
       inventoryId,
       updateData,
@@ -137,6 +162,19 @@ exports.updateInventory = async (req, res) => {
         success: false,
         message: 'Stok bulunamadı'
       });
+    }
+    
+    // Düşük stok durumu değişti mi kontrol et
+    const wasLowStock = oldQuantity <= oldMinStockLevel;
+    const isNowNormalStock = inventory.quantity > inventory.minStockLevel;
+    
+    if (wasLowStock && isNowNormalStock) {
+      console.log(`📈 Stok güncelleme ile seviye normale döndü: ${inventory.quantity}/${inventory.minStockLevel}`);
+      // Düşük stok bildirimlerini temizle
+      await this.clearLowStockNotifications(inventory);
+      // Flag'i sıfırla
+      inventory.lowStockNotificationSent = false;
+      await inventory.save();
     }
 
     res.json({
@@ -407,6 +445,8 @@ exports.sendExpiryNotifications = async () => {
 // Düşük stok uyarıları için bildirim gönder
 exports.sendLowStockNotifications = async () => {
   try {
+    console.log('🔍 Düşük stok bildirimleri başlatılıyor...');
+    
     const notificationController = require('./notificationController');
     const Inventory = require('../models/Inventory');
     const User = require('../models/User');
@@ -420,12 +460,42 @@ exports.sendLowStockNotifications = async () => {
     .populate('medicine', 'name barcode dosageForm')
     .populate('pharmacy', 'name owner');
     
-    console.log(`Düşük stok seviyesinde ${lowStockInventories.length} ürün bulundu.`);
+    console.log(`📊 Düşük stok seviyesinde ${lowStockInventories.length} ürün bulundu.`);
+    
+    if (lowStockInventories.length === 0) {
+      console.log('✅ Düşük stok uyarısı gerektiren ürün bulunamadı.');
+      return {
+        success: true,
+        count: 0,
+        message: 'Düşük stok uyarısı gerektiren ürün bulunamadı'
+      };
+    }
+    
+    // Debug: İlk birkaç kaydı logla
+    lowStockInventories.slice(0, 3).forEach((inv, index) => {
+      console.log(`📦 ${index + 1}. Ürün:`, {
+        medicine: inv.medicine?.name || 'İlaç bilgisi yok',
+        quantity: inv.quantity,
+        minStockLevel: inv.minStockLevel,
+        pharmacy: inv.pharmacy?.name || 'Eczane bilgisi yok',
+        owner: inv.pharmacy?.owner || 'Sahip bilgisi yok',
+        lowStockNotificationSent: inv.lowStockNotificationSent
+      });
+    });
+    
+    let successCount = 0;
     
     // Her bir envanter kaydı için bildirim gönder
     for (const inventory of lowStockInventories) {
+      console.log(`\n🔄 İşleniyor: ${inventory.medicine?.name || 'Bilinmeyen ilaç'}`);
+      
       if (!inventory.pharmacy || !inventory.pharmacy.owner || !inventory.medicine) {
-        console.log('Eksik veri - atlanıyor:', inventory._id);
+        console.log('❌ Eksik veri - atlanıyor:', {
+          inventoryId: inventory._id,
+          hasPharmacy: !!inventory.pharmacy,
+          hasOwner: !!inventory.pharmacy?.owner,
+          hasMedicine: !!inventory.medicine
+        });
         continue;
       }
       
@@ -433,39 +503,87 @@ exports.sendLowStockNotifications = async () => {
       const pharmacyOwner = await User.findById(inventory.pharmacy.owner);
       
       if (!pharmacyOwner) {
-        console.log(`Eczane sahibi bulunamadı: ${inventory.pharmacy.owner}`);
+        console.log(`❌ Eczane sahibi bulunamadı: ${inventory.pharmacy.owner}`);
         continue;
       }
       
+      console.log(`👤 Eczane sahibi bulundu: ${pharmacyOwner.name} ${pharmacyOwner.surname} (${pharmacyOwner.pharmacistId})`);
+      
       // Bildirim oluştur
-      await notificationController.createNotification(pharmacyOwner._id, {
-        title: 'Düşük Stok Uyarısı',
-        message: `${inventory.medicine.name} ilacı için stok seviyesi kritik düzeye ulaştı (${inventory.quantity}/${inventory.minStockLevel}).`,
-        type: 'system',
-        data: {
-          medicineId: inventory.medicine._id,
-          inventoryId: inventory._id,
-          quantity: inventory.quantity,
-          minStockLevel: inventory.minStockLevel
-        }
-      });
-      
-      // Bildirim gönderildi olarak işaretle
-      inventory.lowStockNotificationSent = true;
-      await inventory.save();
-      
-      console.log(`${pharmacyOwner.name} ${pharmacyOwner.surname} kullanıcısına düşük stok bildirimi gönderildi.`);
+      try {
+        await notificationController.createNotification(pharmacyOwner._id, {
+          title: 'Düşük Stok Uyarısı',
+          message: `${inventory.medicine.name} ilacı için stok seviyesi kritik düzeye ulaştı (${inventory.quantity}/${inventory.minStockLevel}).`,
+          type: 'system',
+          data: {
+            medicineId: inventory.medicine._id,
+            inventoryId: inventory._id,
+            quantity: inventory.quantity,
+            minStockLevel: inventory.minStockLevel
+          }
+        });
+        
+        console.log(`✅ Bildirim oluşturuldu: ${inventory.medicine.name}`);
+        
+        // Bildirim gönderildi olarak işaretle
+        inventory.lowStockNotificationSent = true;
+        await inventory.save();
+        
+        console.log(`✅ Flag güncellendi: ${inventory.medicine.name}`);
+        successCount++;
+        
+      } catch (notificationError) {
+        console.error(`❌ Bildirim oluşturma hatası (${inventory.medicine.name}):`, notificationError);
+      }
     }
+    
+    console.log(`\n🎉 Düşük stok bildirimleri tamamlandı. ${successCount}/${lowStockInventories.length} bildirim gönderildi.`);
     
     return {
       success: true,
-      count: lowStockInventories.length
+      count: successCount,
+      total: lowStockInventories.length
     };
   } catch (error) {
-    console.error('Düşük stok bildirimleri gönderilirken hata oluştu:', error);
+    console.error('❌ Düşük stok bildirimleri gönderilirken hata oluştu:', error);
     return {
       success: false,
       error: error.message
     };
+  }
+};
+
+// Düşük stok bildirimlerini temizle (yardımcı fonksiyon)
+exports.clearLowStockNotifications = async (inventory) => {
+  try {
+    const Notification = require('../models/Notification');
+    const User = require('../models/User');
+    
+    console.log(`🧹 ${inventory.medicine?.name || 'Bilinmeyen ilaç'} için düşük stok bildirimleri temizleniyor...`);
+    
+    // Eczane sahibini bul
+    const pharmacy = await inventory.populate('pharmacy');
+    if (!pharmacy.pharmacy?.owner) {
+      console.log('❌ Eczane sahibi bulunamadı, bildirim temizlenemedi');
+      return;
+    }
+    
+    // Bu ilaç için düşük stok bildirimlerini bul ve sil
+    const deletedNotifications = await Notification.deleteMany({
+      recipient: pharmacy.pharmacy.owner,
+      type: 'system',
+      'data.inventoryId': inventory._id,
+      $or: [
+        { title: 'Düşük Stok Uyarısı' },
+        { title: { $regex: 'Düşük Stok', $options: 'i' } }
+      ]
+    });
+    
+    console.log(`✅ ${deletedNotifications.deletedCount} düşük stok bildirimi temizlendi`);
+    
+    return deletedNotifications.deletedCount;
+  } catch (error) {
+    console.error('❌ Düşük stok bildirimleri temizlenirken hata oluştu:', error);
+    return 0;
   }
 }; 

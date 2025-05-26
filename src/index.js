@@ -10,6 +10,8 @@ const transactionRoutes = require('./routes/transactionRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 // Bildirim rotalarını ekle
 const notificationRoutes = require('./routes/notificationRoutes');
+// Scheduler sistemini ekle
+const Scheduler = require('./utils/scheduler');
 // const { seedDatabase } = require('./seedData');
 
 const app = express();
@@ -23,6 +25,13 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://Cluster53739:1910@
 mongoose.connect(MONGODB_URI)
   .then(async () => {
     console.log('MongoDB bağlantısı başarılı');
+    
+    // Scheduler'ı başlat
+    console.log('🕐 Scheduler sistemi başlatılıyor...');
+    Scheduler.startJobs();
+    
+    // Scheduler'ı global olarak erişilebilir yap
+    app.locals.scheduler = Scheduler;
     
     // Sadece geliştirme ortamında ve istenmesi durumunda seed işlemi yap
     // if (process.env.SEED_DATABASE === 'true') {
@@ -40,7 +49,6 @@ app.use('/api/medicines', medicineRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/admin', adminRoutes);
-// Bildirim route'unu ekle
 app.use('/api/notifications', notificationRoutes);
 
 // Sağlık kontrolü endpoint'i
@@ -115,6 +123,70 @@ app.get('/api/test-notifications', async (req, res) => {
   } catch (error) {
     console.error('Test bildirimleri oluşturma hatası:', error);
     res.status(500).json({ message: 'Test bildirimleri oluşturulurken hata oluştu', error: error.message });
+  }
+});
+
+// Manuel bildirim kontrolü endpoint'i (test için)
+app.post('/api/check-notifications-manually', async (req, res) => {
+  try {
+    console.log('🔍 Manuel bildirim kontrolü başlatılıyor...');
+    
+    if (!app.locals.scheduler) {
+      return res.status(500).json({
+        success: false,
+        message: 'Scheduler sistemi başlatılmamış'
+      });
+    }
+    
+    const result = await app.locals.scheduler.runJobsManually();
+    
+    res.json({
+      success: true,
+      message: 'Manuel bildirim kontrolü tamamlandı',
+      data: result
+    });
+  } catch (error) {
+    console.error('Manuel bildirim kontrolü hatası:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Manuel bildirim kontrolü sırasında hata oluştu',
+      error: error.message
+    });
+  }
+});
+
+// Test için bildirim flag'lerini sıfırla
+app.post('/api/reset-notification-flags', async (req, res) => {
+  try {
+    const Inventory = require('./models/Inventory');
+    
+    console.log('🔄 Bildirim flag\'leri sıfırlanıyor...');
+    
+    // Tüm envanter kayıtlarındaki bildirim flag'lerini sıfırla
+    const result = await Inventory.updateMany(
+      {},
+      { 
+        $unset: { 
+          lowStockNotificationSent: 1,
+          notificationSent: 1 
+        } 
+      }
+    );
+    
+    console.log(`${result.modifiedCount} envanter kaydının bildirim flag'leri sıfırlandı.`);
+    
+    res.json({
+      success: true,
+      message: 'Bildirim flag\'leri başarıyla sıfırlandı',
+      modifiedCount: result.modifiedCount
+    });
+  } catch (error) {
+    console.error('Flag sıfırlama hatası:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Flag sıfırlama sırasında hata oluştu',
+      error: error.message
+    });
   }
 });
 

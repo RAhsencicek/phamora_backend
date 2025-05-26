@@ -297,6 +297,52 @@ pharmacistid: 123123
 | `expiry` | Son kullanma tarihi uyarısı | İlaçlar expire olmaya yaklaştığında |
 | `system` | Sistem bildirimi | Sistem güncellemeleri için |
 
+## 📊 Bildirim Data Formatı
+
+### Offer Bildirimi (Yeni Teklif)
+```json
+{
+  "id": "notification_id",
+  "title": "Yeni İşlem Teklifi",
+  "message": "HARPUT ECZANESİ eczanesinden Aspirin (5 adet) için yeni bir teklif aldınız.",
+  "type": "offer",
+  "isRead": false,
+  "date": "2025-05-26T03:57:11.123Z",
+  "data": {
+    "transactionId": "transaction_id",
+    "medicineNames": "Aspirin",
+    "totalItems": 5,
+    "totalAmount": {
+      "currency": "TRY",
+      "amount": 125.00
+    },
+    "sellerPharmacy": "HARPUT ECZANESİ"
+  }
+}
+```
+
+### Transaction Bildirimi (İşlem Onaylandı)
+```json
+{
+  "id": "notification_id",
+  "title": "İşlem Onaylandı",
+  "message": "Merkez Eczanesi Aspirin (3 adet) için teklifinizi onayladı.",
+  "type": "transaction",
+  "isRead": false,
+  "date": "2025-05-26T03:58:22.456Z",
+  "data": {
+    "transactionId": "transaction_id",
+    "medicineNames": "Aspirin",
+    "totalItems": 3,
+    "totalAmount": {
+      "currency": "TRY",
+      "amount": 75.00
+    },
+    "buyerPharmacy": "Merkez Eczanesi"
+  }
+}
+```
+
 ## 🔄 Bildirim Akışı
 
 ```
