@@ -352,11 +352,6 @@
 								"key": "pharmacistid",
 								"value": "12345678910",
 								"description": "Kullanıcı kimlik bilgisi"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{authToken}}",
-								"description": "JWT token for authentication"
 							}
 						],
 						"url": {
@@ -701,11 +696,6 @@
 								"key": "pharmacistid",
 								"value": "12345678910",
 								"description": "Kullanıcı kimlik bilgisi"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{authToken}}",
-								"description": "JWT token for authentication"
 							}
 						],
 						"url": {
@@ -816,11 +806,6 @@
 								"key": "pharmacistid",
 								"value": "12345678910",
 								"description": "Kullanıcı kimlik bilgisi"
-							},
-							{
-								"key": "Authorization",
-								"value": "Bearer {{authToken}}",
-								"description": "JWT token for authentication"
 							}
 						],
 						"url": {
