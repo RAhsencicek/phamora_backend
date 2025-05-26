@@ -1552,11 +1552,11 @@ exports.confirmTransaction = async (req, res) => {
       });
     }
 
-    // Sadece alıcı eczane onaylayabilir
-    if (!transaction.buyer.equals(pharmacyId)) {
+    // Sadece satıcı eczane onaylayabilir
+    if (!transaction.seller.equals(pharmacyId)) {
       return res.status(403).json({
         success: false,
-        message: 'Bu işlemi onaylama yetkiniz yok. Sadece alıcı eczane onaylayabilir.'
+        message: 'Bu işlemi onaylama yetkiniz yok. Sadece satıcı eczane onaylayabilir.'
       });
     }
 

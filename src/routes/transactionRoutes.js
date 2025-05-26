@@ -15,7 +15,7 @@ router.get('/:transactionId', requireAuth, transactionController.getTransactionB
 // Yeni işlem oluştur
 router.post('/', requireAuth, transactionController.createTransaction);
 
-// İşlem onaylama (alıcı tarafından)
+// İşlem onaylama (satıcı tarafından)
 router.post('/:transactionId/confirm', requireAuth, transactionController.confirmTransaction);
 
 // İşlem reddetme (alıcı tarafından)
